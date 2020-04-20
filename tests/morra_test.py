@@ -10,7 +10,7 @@ import sys
 sys.path.append('../')
 ###
 
-from _tests._test_support import bprint, eprint, safe_run, check_res
+from tests._test_support import bprint, eprint, safe_run, check_res
 from morra import MorphParser3
 
 WORK_DIR = os.path.dirname(os.path.realpath(__file__))

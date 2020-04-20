@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Morra project: Morphological parser
 #
-# Copyright (C) 2019-present by Sergei Ternovykh
+# Copyright (C) 2020-present by Sergei Ternovykh
 # License: BSD, see LICENSE for details
 """
 Single-pass forward and backward morphological parsers for POS and FEATS
@@ -14,14 +14,10 @@ import random
 from random import randint, random as rand
 import sys
 
-###
-import sys
-sys.path.append('../')
-###
 from corpuscula.corpus_utils import _AbstractCorpus
 from corpuscula.utils import LOG_FILE, print_progress
-from .base_parser import _AveragedPerceptron, BaseParser
-from .features import Features
+from morra.base_parser import _AveragedPerceptron, BaseParser
+from morra.features import Features
 
 
 class MorphParser(BaseParser):
@@ -29,8 +25,8 @@ class MorphParser(BaseParser):
     PerceptronTagger from NLTK extended by CorpusDict methods and generalized
     to features other than POS"""
 
-    def __init__ (self, features='RU',
-                  guess_pos=None, guess_lemma=None, guess_feat=None):
+    def __init__(self, features='RU',
+                 guess_pos=None, guess_lemma=None, guess_feat=None):
         super().__init__()
         self.features = Features(lang=features) \
             if isinstance(features, str) else features
@@ -47,7 +43,7 @@ class MorphParser(BaseParser):
         self._feats_models     = {}
         self._feats_rev_models = {}
 
-    def backup (self):
+    def backup(self):
         """Get current state"""
         o = super().backup()
         o.update({'pos_model_weights'       : self._pos_model.weights
@@ -71,7 +67,7 @@ class MorphParser(BaseParser):
                   }})
         return o
 
-    def restore (self, o):
+    def restore(self, o):
         """Restore current state from backup object"""
         super().restore(o)
         (pos_model_weights       ,
@@ -121,12 +117,12 @@ class MorphParser(BaseParser):
                 model = models[feat] = _AveragedPerceptron()
                 model.weights = weights
 
-    def _save_pos_model (self, file_path):
+    def _save_pos_model(self, file_path):
         with open(file_path, 'wb') as f:
             pickle.dump(self._pos_model.weights if self._pos_model else
                         None, f, 2)
 
-    def _load_pos_model (self, file_path):
+    def _load_pos_model(self, file_path):
         with open(file_path, 'rb') as f:
             weights = pickle.load(f)
             if weights:
@@ -135,12 +131,12 @@ class MorphParser(BaseParser):
             else:
                 self._pos_model = None
 
-    def _save_pos_rev_model (self, file_path):
+    def _save_pos_rev_model(self, file_path):
         with open(file_path, 'wb') as f:
             pickle.dump(self._pos_rev_model.weights if self._pos_rev_model else
                         None, f, 2)
 
-    def _load_pos_rev_model (self, file_path):
+    def _load_pos_rev_model(self, file_path):
         with open(file_path, 'rb') as f:
             weights = pickle.load(f)
             if weights:
@@ -149,20 +145,20 @@ class MorphParser(BaseParser):
             else:
                 self._pos_rev_model = None
 
-    def _save_lemma_model (self, file_path):
+    def _save_lemma_model(self, file_path):
         with open(file_path, 'wb') as f:
             pickle.dump(self._lemma_model, f, 2)
 
-    def _load_lemma_model (self, file_path):
+    def _load_lemma_model(self, file_path):
         with open(file_path, 'rb') as f:
             self._lemma_model = pickle.load(f)
 
-    def _save_feats_model (self, file_path):
+    def _save_feats_model(self, file_path):
         with open(file_path, 'wb') as f:
             pickle.dump(self._feats_model.weights if self._feats_model else
                         None, f, 2)
 
-    def _load_feats_model (self, file_path):
+    def _load_feats_model(self, file_path):
         with open(file_path, 'rb') as f:
             weights = pickle.load(f)
             if weights:
@@ -171,13 +167,13 @@ class MorphParser(BaseParser):
             else:
                 self._feats_model = None
 
-    def _save_feats_rev_model (self, file_path):
+    def _save_feats_rev_model(self, file_path):
         with open(file_path, 'wb') as f:
             pickle.dump(self._feats_rev_model.weights
                             if self._feats_rev_model else
                         None, f, 2)
 
-    def _load_feats_rev_model (self, file_path):
+    def _load_feats_rev_model(self, file_path):
         with open(file_path, 'rb') as f:
             weights = pickle.load(f)
             if weights:
@@ -186,7 +182,7 @@ class MorphParser(BaseParser):
             else:
                 self._feats_rev_model = None
 
-    def _save_feats_models (self, file_path, feat=None):
+    def _save_feats_models(self, file_path, feat=None):
         with open(file_path, 'wb') as f:
             pickle.dump(
                 (feat, self._feats_models[feat].weights) if feat else
@@ -194,7 +190,7 @@ class MorphParser(BaseParser):
                 f, 2
             )
 
-    def _load_feats_models (self, file_path):
+    def _load_feats_models(self, file_path):
         with open(file_path, 'rb') as f:
             o = pickle.load(f)
             if isinstance(o, tuple):
@@ -207,7 +203,7 @@ class MorphParser(BaseParser):
                     model = models[feat] = _AveragedPerceptron()
                     model.weights = weights
 
-    def _save_feats_rev_models (self, file_path, feat=None):
+    def _save_feats_rev_models(self, file_path, feat=None):
         with open(file_path, 'wb') as f:
             pickle.dump(
                 (feat, self._feats_rev_models[feat].weights) if feat else
@@ -215,7 +211,7 @@ class MorphParser(BaseParser):
                 f, 2
             )
 
-    def _load_feats_rev_models (self, file_path):
+    def _load_feats_rev_models(self, file_path):
         with open(file_path, 'rb') as f:
             o = pickle.load(f)
             if isinstance(o, tuple):
@@ -228,7 +224,7 @@ class MorphParser(BaseParser):
                     model = models[feat] = _AveragedPerceptron()
                     model.weights = weights
 
-    def predict_pos (self, sentence, rev=False, inplace=True):
+    def predict_pos(self, sentence, rev=False, inplace=True):
         """Tag the *sentence* with the POS tagger.
 
         :param sentence: sentence in Parsed CONLL-U format
@@ -236,7 +232,7 @@ class MorphParser(BaseParser):
         :param rev: if True, use Reversed POS tagger instead of generic
                     straight one
         :param inplace: if True, method changes and returns the given sentence
-                        itself; elsewise new sentence will be created
+                        itself; elsewise, new sentence will be created
         :return: tagged sentence in Parsed CONLL-U format
         """
         cdict = self._cdict
@@ -276,14 +272,14 @@ class MorphParser(BaseParser):
                 token['UPOS'] = None
         return sentence
 
-    def predict_lemma (self, sentence, inplace=True):
+    def predict_lemma(self, sentence, inplace=True):
         """Generate lemmata for wforms of the *sentence*.
 
         :param sentence: sentence in Parsed CONLL-U format; UPOS field must be 
                          already filled
         :type sentence: list(dict)
         :param inplace: if True, method changes and returns the given sentence
-                        itself; elsewise the new sentence will be created
+                        itself; elsewise, the new sentence will be created
         :return: tagged sentence in Parsed CONLL-U format
         """
         cdict = self._cdict
@@ -309,22 +305,22 @@ class MorphParser(BaseParser):
                 token['LEMMA'] = None
         return sentence
 
-    def predict_feats (self, sentence, joint=False, rev=False, feat=None,
-                       inplace=True):
+    def predict_feats(self, sentence, joint=False, rev=False, feat=None,
+                      inplace=True):
         """Tag the *sentence* with the FEATS tagger.
 
         :param sentence: sentence in Parsed CONLL-U format; UPOS and LEMMA
                          fields must be already filled
         :type sentence: list(dict)
-        :param joint: if True, use joint FEATS model; elsewise use separate
+        :param joint: if True, use joint FEATS model; elsewise, use separate
                       models (default)
         :param rev: if True, use Reversed FEATS tagger instead of generic
                     straight one
-        :param feat: name of the feat to tag; if None then all possible feats
+        :param feat: name of the feat to tag; if None, then all possible feats
                      will be tagged
         :type feat: str
         :param inplace: if True, method changes and returns the given sentence
-                        itself; elsewise new sentence will be created
+                        itself; elsewise, new sentence will be created
         :return: tagged sentence in Parsed CONLL-U format
         """
         return (
@@ -334,8 +330,8 @@ class MorphParser(BaseParser):
             sentence, rev=rev, feat=feat, inplace=inplace
         )
 
-    def _predict_feats_separate (self, sentence, rev=False, feat=None,
-                                 inplace=True):
+    def _predict_feats_separate(self, sentence, rev=False, feat=None,
+                                inplace=True):
         cdict = self._cdict
         models = self._feats_rev_models if rev else self._feats_models
         assert models, \
@@ -395,8 +391,8 @@ class MorphParser(BaseParser):
                     feats.clear()
         return sentence
 
-    def _predict_feats_joint (self, sentence, rev=False, feat=None,
-                              inplace=True):
+    def _predict_feats_joint(self, sentence, rev=False, feat=None,
+                             inplace=True):
         assert not feat, 'ERROR: feat must be None with joint=True'
         cdict = self._cdict
         model = self._feats_rev_model if rev else self._feats_model
@@ -435,20 +431,20 @@ class MorphParser(BaseParser):
                 i += 1
         return sentence
 
-    def predict (self, sentence, pos_rev=False, feats_joint=False,
-                 feats_rev=False, inplace=True):
+    def predict(self, sentence, pos_rev=False, feats_joint=False,
+                feats_rev=False, inplace=True):
         """Tag the *sentence* with the all available taggers.
 
         :param sentence: sentence in Parsed CONLL-U format
         :type sentence: list(dict)
         :param pos_rev: if True, use Reversed POS tagger instead of generic
                         straight one
-        :param feats_joint: if True, use joint FEATS model; elsewise use
+        :param feats_joint: if True, use joint FEATS model; elsewise, use
                             separate models (default)
         :param feats_rev: if True, use Reversed FEATS tagger instead of generic
                           straight one
         :param inplace: if True, method changes and returns the given sentence
-                        itself; elsewise new sentence will be created
+                        itself; elsewise, new sentence will be created
         :return: tagged sentence in Parsed CONLL-U format
         """
         return \
@@ -462,17 +458,17 @@ class MorphParser(BaseParser):
                 joint=feats_joint, rev=feats_rev, inplace=inplace
             )
 
-    def predict_pos_sents (self, sentences=None, rev=False, inplace=True,
-                           save_to=None):
+    def predict_pos_sents(self, sentences=None, rev=False, inplace=True,
+                          save_to=None):
         """Apply ``self.predict_pos()`` to each element of *sentences*.
 
-        :param sentences: a name of file in CONLL-U format or list/iterator of
-                          sentences in Parsed CONLL-U. If None then loaded test
-                          corpus is used
+        :param sentences: a name of a file in CONLL-U format or list/iterator
+                          of sentences in Parsed CONLL-U. If None, then loaded
+                          test corpus is used
         :param rev: if True, use Reversed POS tagger instead of generic
                     straight one
         :param inplace: if True, method changes and returns the given
-                        sentences themselves; elsewise new list of sentences
+                        sentences themselves; elsewise, new list of sentences
                         will be created
         :param save_to: if not None then the result will be saved to the file
                         with a specified name
@@ -486,14 +482,14 @@ class MorphParser(BaseParser):
             save_to=save_to
         )
 
-    def predict_lemma_sents (self, sentences=None, inplace=True, save_to=None):
+    def predict_lemma_sents(self, sentences=None, inplace=True, save_to=None):
         """Apply ``self.predict_lemma()`` to each element of *sentences*.
 
-        :param sentences: a name of file in CONLL-U format or list/iterator of
-                          sentences in Parsed CONLL-U. If None then loaded test
-                          corpus is used
+        :param sentences: a name of a file in CONLL-U format or list/iterator
+                          of sentences in Parsed CONLL-U. If None, then loaded
+                          test corpus is used
         :param inplace: if True, method changes and returns the given
-                        sentences themselves; elsewise the new list of
+                        sentences themselves; elsewise, the new list of
                         sentences will be created
         :param save_to: if not None then the result will be saved to the file
                         with a specified name
@@ -506,22 +502,22 @@ class MorphParser(BaseParser):
             save_to=save_to
         )
 
-    def predict_feats_sents (self, sentences=None, joint=False, rev=False,
-                             feat=None, inplace=True, save_to=None):
+    def predict_feats_sents(self, sentences=None, joint=False, rev=False,
+                            feat=None, inplace=True, save_to=None):
         """Apply ``self.predict_feats()`` to each element of *sentences*.
 
-        :param sentences: a name of file in CONLL-U format or list/iterator of
-                          sentences in Parsed CONLL-U. If None then loaded test
-                          corpus is used
-        :param joint: if True, use joint FEATS model; elsewise use separate
+        :param sentences: a name of a file in CONLL-U format or list/iterator
+                          of sentences in Parsed CONLL-U. If None, then loaded
+                          test corpus is used
+        :param joint: if True, use joint FEATS model; elsewise, use separate
                       models (default)
         :param rev: if True, use Reversed FEATS tagger instead of generic
                     straight one
-        :param feat: name of the feat to tag; if None then all feats will be
+        :param feat: name of the feat to tag; if None, then all feats will be
                      tagged
         :type feat: str
         :param inplace: if True, method changes and returns the given
-                        sentences themselves; elsewise the new list of
+                        sentences themselves; elsewise, the new list of
                         sentences will be created
         :param save_to: if not None then the result will be saved to the file
                         with a specified name
@@ -536,21 +532,21 @@ class MorphParser(BaseParser):
             save_to=save_to
         )
 
-    def predict_sents (self, sentences=None, pos_rev=False, feats_joint=False,
-                       feats_rev=False, inplace=True, save_to=None):
+    def predict_sents(self, sentences=None, pos_rev=False, feats_joint=False,
+                      feats_rev=False, inplace=True, save_to=None):
         """Apply ``self.predict()`` to each element of *sentences*.
 
-        :param sentences: a name of file in CONLL-U format or list/iterator of
-                          sentences in Parsed CONLL-U. If None then loaded test
-                          corpus is used
+        :param sentences: a name of the file in CONLL-U format or list/iterator
+                          of sentences in Parsed CONLL-U. If None, then loaded
+                          test corpus is used
         :param pos_rev: if True, use Reversed POS tagger instead of generic
                         straight one
-        :param feats_joint: if True, use joint FEATS model; elsewise use
+        :param feats_joint: if True, use joint FEATS model; elsewise, use
                             separate models (default)
         :param feats_rev: if True, use Reversed FEATS tagger instead of generic
                           straight one
         :param inplace: if True, method changes and returns the given
-                        sentences themselves; elsewise new list of sentences
+                        sentences themselves; elsewise, new list of sentences
                         will be created
         :param save_to: if not None then the result will be saved to the file
                         with a specified name
@@ -565,8 +561,8 @@ class MorphParser(BaseParser):
             save_to=save_to
         )
 
-    def evaluate_pos (self, gold=None, test=None, rev=False, pos=None,
-                      unknown_only=False, silent=False):
+    def evaluate_pos(self, gold=None, test=None, rev=False, pos=None,
+                     unknown_only=False, silent=False):
         """Score the accuracy of the POS tagger against the gold standard.
         Remove POS tags from the gold standard text, retag it using the tagger,
         then compute the accuracy score. If test is not None, compute the
@@ -577,10 +573,10 @@ class MorphParser(BaseParser):
         :param test: a corpus of tagged sentences to compare with gold
         :param rev: if True, use Reversed POS tagger instead of generic
                     straight one
-        :param pos: name of the tag to evaluate the tagger; if None then
+        :param pos: name of the tag to evaluate the tagger; if None, then
                     tagger will be evaluated for all tags
-        :param unknown_only: calculate accuracy score only for words that not
-                             present in train corpus
+        :param unknown_only: calculate accuracy score only for words that are
+                             not present in train corpus
         :param silent: suppress log
         :return: accuracy score of the tagger against the gold
         :rtype: float
@@ -657,8 +653,8 @@ class MorphParser(BaseParser):
                       file=LOG_FILE)
         return c / n if n > 0 else 1.
 
-    def evaluate_lemma (self, gold=None, test=None, unknown_only=False,
-                        silent=False):
+    def evaluate_lemma(self, gold=None, test=None, unknown_only=False,
+                       silent=False):
         """Score the accuracy of the Lemma generator against the gold standard.
         Remove lemmata from the gold standard text, generate new lemmata using
         the tagger, then compute the accuracy score. If test is not None,
@@ -667,8 +663,8 @@ class MorphParser(BaseParser):
         :param gold: a corpus of tagged sentences to score the generator on.
                      If gold is None then loaded test corpus is used
         :param test: a corpus of tagged sentences to compare with gold
-        :param unknown_only: calculate accuracy score only for words that not
-                             present in train corpus
+        :param unknown_only: calculate accuracy score only for words that are
+                             not present in train corpus
         :param silent: suppress log
         :return: accuracy score of the generator against the gold
         :rtype: float
@@ -724,8 +720,8 @@ class MorphParser(BaseParser):
                       file=LOG_FILE)
         return c / n if n > 0 else 1.
 
-    def evaluate_feats (self, gold=None, test=None, joint=False, rev=False,
-                        feat=None, unknown_only=False, silent=False):
+    def evaluate_feats(self, gold=None, test=None, joint=False, rev=False,
+                       feat=None, unknown_only=False, silent=False):
         """Score the accuracy of the FEATS tagger against the gold standard.
         Remove feats (or only one specified feat) from the gold standard text,
         generate new feats using the tagger, then compute the accuracy score.
@@ -735,15 +731,15 @@ class MorphParser(BaseParser):
         :param gold: a corpus of tagged sentences to score the tagger on.
                      If gold is None then loaded test corpus is used
         :param test: a corpus of tagged sentences to compare with gold
-        :param joint: if True, use joint FEATS model; elsewise use separate
+        :param joint: if True, use joint FEATS model; elsewise, use separate
                       models (default)
         :param rev: if True, use Reversed FEATS tagger instead of generic
                     straight one
-        :param feat: name of the feat to evaluate the tagger; if None then
+        :param feat: name of the feat to evaluate the tagger; if None, then
                      tagger will be evaluated for all feats
         :type feat: str
-        :param unknown_only: calculate accuracy score only for words that not
-                             present in train corpus
+        :param unknown_only: calculate accuracy score only for words that are
+                             not present in train corpus
         :param silent: suppress log
         :return: accuracy scores of the tagger against the gold:
                  1. by tokens: the tagging of the whole token may be either
@@ -829,9 +825,9 @@ class MorphParser(BaseParser):
                           file=LOG_FILE)
         return c / n if n > 0 else 1., ct / nt if nt > 0 else 1.
 
-    def evaluate (self, gold=None, test=None, pos_rev=False,
-                  feats_joint=False, feats_rev=False, feat=None,
-                  unknown_only=False, silent=False):
+    def evaluate(self, gold=None, test=None, pos_rev=False,
+                 feats_joint=False, feats_rev=False, feat=None,
+                 unknown_only=False, silent=False):
         """Score a joint accuracy of the all available taggers against the
         gold standard. Extract wforms from the gold standard text, retag it
         using all the taggers, then compute a joint accuracy score. If test
@@ -843,15 +839,15 @@ class MorphParser(BaseParser):
         :param test: a corpus of tagged sentences to compare with gold
         :param pos_rev: if True, use Reversed POS tagger instead of generic
                         straight one
-        :param feats_joint: if True, use joint FEATS model; elsewise use
+        :param feats_joint: if True, use joint FEATS model; elsewise, use
                             separate models (default)
         :param feats_rev: if True, use Reversed FEATS tagger instead of generic
                           straight one
-        :param feat: name of the feat to evaluate the tagger; if None then
+        :param feat: name of the feat to evaluate the tagger; if None, then
                      tagger will be evaluated for all feats
         :type feat: str
-        :param unknown_only: calculate accuracy score only for words that not
-                             present in train corpus
+        :param unknown_only: calculate accuracy score only for words that are
+                             not present in train corpus
         :param silent: suppress log
         :return: joint accuracy scores of the taggers against the gold:
                  1. by tokens: the tagging of the whole token may be either
@@ -938,13 +934,13 @@ class MorphParser(BaseParser):
                       file=LOG_FILE)
         return res
 
-    def train_pos (self, rev=False, epochs=5, no_train_evals=True, seed=None,
-                   dropout=None, context_dropout=None):
+    def train_pos(self, rev=False, epochs=5, no_train_evals=True, seed=None,
+                  dropout=None, context_dropout=None):
         """Train a POS tagger from ``self._train_corpus``.
 
         :param rev: if True, train Reversed POS tagger instead of generic
                     straight one
-        :param epochs: number of training iterations. If epochs < 0 then the
+        :param epochs: number of training iterations. If epochs < 0, then the
                        best model will be searched based on evaluation of test
                        corpus. The search will be stopped when the result of
                        next |epochs| iterations will be worse than the best
@@ -1055,10 +1051,10 @@ class MorphParser(BaseParser):
             {'rev': rev}
         )
 
-    def train_lemma (self, epochs=5, no_train_evals=True, seed=None):
+    def train_lemma(self, epochs=5, no_train_evals=True, seed=None):
         """Train a lemma tagger from ``self._train_corpus``.
 
-        :param epochs: number of training iterations. If epochs < 0 then the
+        :param epochs: number of training iterations. If epochs < 0, then the
                        best model will be searched based on evaluation of test
                        corpus. The search will be stopped when the result of
                        next |epochs| iterations will be worse than the best
@@ -1076,19 +1072,19 @@ class MorphParser(BaseParser):
         self._lemma_model = True
         # Yes, we do nothing :)
 
-    def train_feats (self, joint=False, rev=False, feat=None, epochs=5,
-                     no_train_evals=True, seed=None, dropout=None,
-                     context_dropout=None):
+    def train_feats(self, joint=False, rev=False, feat=None, epochs=5,
+                    no_train_evals=True, seed=None, dropout=None,
+                    context_dropout=None):
         """Train FEATS taggers from ``self._train_corpus``.
 
-        :param joint: if True, train joint FEATS model; elsewise use separate
+        :param joint: if True, train joint FEATS model; elsewise, use separate
                       models (default)
         :param rev: if True, train Reversed FEATS tagger instead of generic
                     straight one
-        :param feat: name of the feat to evaluate the tagger; if None then
+        :param feat: name of the feat to evaluate the tagger; if None, then
                      tagger will be evaluated for all feats
         :type feat: str
-        :param epochs: number of training iterations. If epochs < 0 then the
+        :param epochs: number of training iterations. If epochs < 0, then the
                        best model will be searched based on evaluation of test
                        corpus. The search will be stopped when the result of
                        next |epochs| iterations will be worse than the best
@@ -1115,9 +1111,9 @@ class MorphParser(BaseParser):
             seed=seed, dropout=dropout, context_dropout=context_dropout
         )
 
-    def _train_feats_separate (self, rev=False, feat=None, epochs=5,
-                               no_train_evals=True, seed=None, dropout=None,
-                               context_dropout=None):
+    def _train_feats_separate(self, rev=False, feat=None, epochs=5,
+                              no_train_evals=True, seed=None, dropout=None,
+                              context_dropout=None):
         cdict, corpus_len, progress_step, progress_check_step, \
                               epochs, epochs_ = self._train_init(epochs, seed)
 
@@ -1238,9 +1234,9 @@ class MorphParser(BaseParser):
         return res if feat else \
                f_evaluate(joint=False, rev=rev, feat=feat, silent=True)
 
-    def _train_feats_joint (self, rev=False, feat=None, epochs=5,
-                            no_train_evals=True, seed=None, dropout=None,
-                            context_dropout=None):
+    def _train_feats_joint(self, rev=False, feat=None, epochs=5,
+                           no_train_evals=True, seed=None, dropout=None,
+                           context_dropout=None):
         cdict, corpus_len, progress_step, progress_check_step, \
                               epochs, epochs_ = self._train_init(epochs, seed)
         assert not feat, 'ERROR: feat must be None with joint=True'

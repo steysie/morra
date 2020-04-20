@@ -1,28 +1,29 @@
+# -*- coding: utf-8 -*-
+# Morra project
+#
+# Copyright (C) 2020-present by Sergei Ternovykh
+# License: BSD, see LICENSE for details
 from copy import deepcopy
 
-###
-import sys
-sys.path.append('../')
-###
 from corpuscula.corpus_utils import _AbstractCorpus
 from corpuscula.utils import LOG_FILE, print_progress
-from .base_parser import BaseParser
+from morra.base_parser import BaseParser
 
 class MorphEnsemble:
 
-    def __init__ (self, cdict):
+    def __init__(self, cdict):
         self._cdict = cdict
         self._predict_methods = []
 
-    def add (self, predict_method, **kwargs):
+    def add(self, predict_method, **kwargs):
         index = len(self._predict_methods)
         self._predict_methods.append((predict_method, kwargs))
         return index
 
-    def pop (self, index):
+    def pop(self, index):
         return self.models.pop(index)
 
-    def predict (self, fields_to_predict, sentence, inplace=True):
+    def predict(self, fields_to_predict, sentence, inplace=True):
         if isinstance(fields_to_predict, str):
             fields_to_predict = [fields_to_predict]
         if not inplace:
@@ -63,15 +64,15 @@ class MorphEnsemble:
                 token[fld] = best_val
         return sentence
 
-    def predict_sents (self, fields_to_predict, sentences, inplace=True,
-                       save_to=None):
+    def predict_sents(self, fields_to_predict, sentences, inplace=True,
+                      save_to=None):
         """Apply ``self.predict()`` to each element of *sentences*.
 
         :param sentences: a name of file in CONLL-U format or list/iterator of
-                          sentences in Parsed CONLL-U. If None then loaded test
-                          corpus is used
+                          sentences in Parsed CONLL-U. If None, then loaded
+                          test corpus is used
         :param inplace: if True, method changes and returns the given
-                        sentences themselves; elsewise new list of sentences
+                        sentences themselves; elsewise, new list of sentences
                         will be created
         :param save_to: if not None then the result will be saved to the file
                         with a specified name
@@ -88,8 +89,8 @@ class MorphEnsemble:
             sentences = BaseParser._get_corpus(save_to, asis=True)
         return sentences
 
-    def evaluate (self, fields_to_evaluate, gold=None, test=None,
-                  feat=None, unknown_only=False, silent=False):
+    def evaluate(self, fields_to_evaluate, gold=None, test=None,
+                 feat=None, unknown_only=False, silent=False):
         """Score a joint accuracy of the all available taggers against the
         gold standard. Extract wforms from the gold standard text, retag it
         using all the taggers, then compute a joint accuracy score. If test
@@ -99,7 +100,7 @@ class MorphEnsemble:
         :param gold: a corpus of tagged sentences to score the tagger on.
                      If gold is None then loaded test corpus is used
         :param test: a corpus of tagged sentences to compare with gold
-        :param feat: name of the feat to evaluate the tagger; if None then
+        :param feat: name of the feat to evaluate the tagger; if None, then
                      tagger will be evaluated for all feats
         :type feat: str
         :param unknown_only: calculate accuracy score only for words that not

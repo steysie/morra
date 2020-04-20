@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Morra project: Base features
 #
-# Copyright (C) 2019-present by Sergei Ternovykh
+# Copyright (C) 2020-present by Sergei Ternovykh
 # License: BSD, see LICENSE for details
 from collections import OrderedDict
 
@@ -13,7 +13,7 @@ class BaseFeatures:
     alphabet_RU = ''.join(['ё']
                         + [chr(i) for i in range(ord('а'), ord('я') + 1)])
 
-    def __init__ (self, lang='RU'):
+    def __init__(self, lang='RU'):
         if lang == 'RU':
             self.alphabet = self.alphabet_RU
             self.alphabet_upper = self.alphabet.upper()
@@ -22,15 +22,15 @@ class BaseFeatures:
                                  .format(lang))
 
     @staticmethod
-    def init_features ():
+    def init_features():
         return OrderedDict()
 
     @staticmethod
-    def add_feature (features, name, *args):
+    def add_feature(features, name, *args):
         f = ' '.join((name,) + tuple(args))
         features[f] = features.get(f, 0) + 1
 
-    def normalize (self, wform):
+    def normalize(self, wform):
         '''
         Normalization used in pre-processing.
         - All words are lower cased
@@ -51,7 +51,7 @@ class BaseFeatures:
         else:
             return wform.lower()
 
-    def wform_shape (self, wform):
+    def wform_shape(self, wform):
         shape = ''
         for c in wform:
             if c in self.alphabet:

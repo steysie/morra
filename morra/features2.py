@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Morra project: Features for MorphParser2
 #
-# Copyright (C) 2019-present by Sergei Ternovykh
+# Copyright (C) 2020-present by Sergei Ternovykh
 # License: BSD, see LICENSE for details
 """
 If you need MorphParser2 to support your language, add feature-functions for
@@ -9,23 +9,19 @@ your language here. Then, create parser as:
 
     ``MorphParser2(features='<your lang>')``
 """
-###
-import sys
-sys.path.append('../')
-###
-from .features import Features
+from morra.features import Features
 
 
 class Features2(Features):
     """Features for MorphParser2"""
 
-    def __init__ (self, lang='RU'):
+    def __init__(self, lang='RU'):
         super().__init__(lang=lang)
         if lang == 'RU':
             self.get_pos2_features = self.get_pos2_features_RU
             self.get_feat2_features = self.get_feat2_features_RU
 
-    def get_pos2_features_RU (self, i, context, pos_context):
+    def get_pos2_features_RU(self, i, context, pos_context):
         context     = self.START + context     + self.END
         pos_context = self.START + pos_context + self.END
         i += len(self.START)
@@ -103,9 +99,9 @@ class Features2(Features):
         self.add_feature(features, '+2w', wform_f2)
         return features
 
-    def get_feat2_features_RU (self, i, feat, context,
-                               lemma_context, pos_context, feats_context,
-                               joint, val_cnt):
+    def get_feat2_features_RU(self, i, feat, context,
+                              lemma_context, pos_context, feats_context,
+                              joint, val_cnt):
         if feat == None:
             feat = ''
 

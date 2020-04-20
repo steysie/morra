@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Morra project: Features for MorphParser
 #
-# Copyright (C) 2019-present by Sergei Ternovykh
+# Copyright (C) 2020-present by Sergei Ternovykh
 # License: BSD, see LICENSE for details
 """
 If you need MorphParser to support your language, add feature-functions for
@@ -9,19 +9,19 @@ your language here. Then, create parser as:
 
     ``MorphParser(features='<your lang>')``
 """
-from .base_features import BaseFeatures
+from morra.base_features import BaseFeatures
 
 
 class Features(BaseFeatures):
     """Features for MorphParser"""
 
-    def __init__ (self, lang='RU'):
+    def __init__(self, lang='RU'):
         super().__init__(lang=lang)
         if lang == 'RU':
             self.get_pos_features = self.get_pos_features_RU
             self.get_feat_features = self.get_feat_features_RU
 
-    def get_pos_features_RU (self, i, context, prev, prev2):
+    def get_pos_features_RU(self, i, context, prev, prev2):
         """Map tokens into a feature representation, implemented as a
         {hashable: int} dict. If the features change, a new model must be
         trained"""
@@ -100,8 +100,8 @@ class Features(BaseFeatures):
         self.add_feature(features, '+2w', wform_f2)
         return features
 
-    def get_feat_features_RU (self, i, context, lemma_context, pos_context,
-                              joint, val_cnt, prev, prev2):
+    def get_feat_features_RU(self, i, context, lemma_context, pos_context,
+                             joint, val_cnt, prev, prev2):
         if prev is None:
             prev = ''
         if prev2 is None:

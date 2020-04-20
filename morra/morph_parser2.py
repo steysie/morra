@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Morra project: Morphological parser 2
 #
-# Copyright (C) 2019-present by Sergei Ternovykh
+# Copyright (C) 2020-present by Sergei Ternovykh
 # License: BSD, see LICENSE for details
 """
 Get the results of forward and backward parsers and make refining parse on the
@@ -14,20 +14,16 @@ import random
 from random import randint, random as rand
 import sys
 
-###
-import sys
-sys.path.append('../')
-###
 from corpuscula.utils import LOG_FILE, print_progress
-from .base_parser import _AveragedPerceptron
-from .features2 import Features2
-from .morph_parser import MorphParser
+from morra.base_parser import _AveragedPerceptron
+from morra.features2 import Features2
+from morra.morph_parser import MorphParser
 
 
 class MorphParser2(MorphParser):
 
-    def __init__ (self, features='RU',
-                  guess_pos=None, guess_lemma=None, guess_feat=None):
+    def __init__(self, features='RU',
+                 guess_pos=None, guess_lemma=None, guess_feat=None):
         super().__init__(
             guess_pos=guess_pos, guess_lemma=guess_lemma, guess_feat=guess_feat
         )
@@ -38,7 +34,7 @@ class MorphParser2(MorphParser):
         self._feats2_model  = None
         self._feats2_models = {}
 
-    def backup (self):
+    def backup(self):
         """Get current state"""
         o = super().backup()
         o.update({'pos2_model_weights'   : self._pos2_model.weights
@@ -52,7 +48,7 @@ class MorphParser2(MorphParser):
                   }})
         return o
 
-    def restore (self, o):
+    def restore(self, o):
         """Restore current state from backup object"""
         super().restore(o)
         (pos2_model_weights   ,
@@ -76,12 +72,12 @@ class MorphParser2(MorphParser):
                 model = self._feats2_models[feat] = _AveragedPerceptron()
                 model.weights = weights
 
-    def _save_pos2_model (self, file_path):
+    def _save_pos2_model(self, file_path):
         with open(file_path, 'wb') as f:
             pickle.dump(self._pos2_model.weights if self._pos2_model else
                         None, f, 2)
 
-    def _load_pos2_model (self, file_path):
+    def _load_pos2_model(self, file_path):
         with open(file_path, 'rb') as f:
             weights = pickle.load(f)
             if weights:
@@ -90,12 +86,12 @@ class MorphParser2(MorphParser):
             else:
                 self._pos2_model = None
 
-    def _save_feats2_model (self, file_path):
+    def _save_feats2_model(self, file_path):
         with open(file_path, 'wb') as f:
             pickle.dump(self._feats2_model.weights if self._feats2_model else
                         None, f, 2)
 
-    def _load_feats2_model (self, file_path):
+    def _load_feats2_model(self, file_path):
         with open(file_path, 'rb') as f:
             weights = pickle.load(f)
             if weights:
@@ -104,7 +100,7 @@ class MorphParser2(MorphParser):
             else:
                 self._feats2_model = None
 
-    def _save_feats2_models (self, file_path, feat=None):
+    def _save_feats2_models(self, file_path, feat=None):
         with open(file_path, 'wb') as f:
             pickle.dump(
                 (feat, self._feats2_models[feat].weights) if feat else
@@ -112,7 +108,7 @@ class MorphParser2(MorphParser):
                 f, 2
             )
 
-    def _load_feats2_models (self, file_path):
+    def _load_feats2_models(self, file_path):
         with open(file_path, 'rb') as f:
             o = pickle.load(f)
             if isinstance(o, tuple):
@@ -125,8 +121,8 @@ class MorphParser2(MorphParser):
                     model = models[feat] = _AveragedPerceptron()
                     model.weights = weights
 
-    def predict_pos2 (self, sentence, with_backoff=True, max_repeats=0,
-                      inplace=True):
+    def predict_pos2(self, sentence, with_backoff=True, max_repeats=0,
+                     inplace=True):
         """Tag the *sentence* with the POS-2 tagger.
 
         :param sentence: sentence in Parsed CONLL-U format
@@ -135,12 +131,13 @@ class MorphParser2(MorphParser):
                              taggers, get one of the bases on the ground of
                              some heuristics
         :param max_repeats: repeat a prediction step based on the previous one
-                            until changes in prediction are diminishing and
-                            ``max_repeats`` is not reached. 0 means one repeat
-                            only for tokens where POS-1 taggers don't concur
+                            while changes in prediction are diminishing and
+                            ``max_repeats`` is not reached. 0 means one
+                            repeat - only for tokens where POS-1 taggers don't
+                            concur
         :type max_repeats: int
         :param inplace: if True, method changes and returns the given sentence
-                        itself; elsewise new sentence will be created
+                        itself; elsewise, new sentence will be created
         :return: tagged sentence in Parsed CONLL-U format
         """
         cdict = self._cdict
@@ -216,28 +213,29 @@ class MorphParser2(MorphParser):
             i_ += 1
         return sentence
 
-    def predict_feats2 (self, sentence, joint=False, with_backoff=True,
-                        max_repeats=0, feat=None, inplace=True):
+    def predict_feats2(self, sentence, joint=False, with_backoff=True,
+                       max_repeats=0, feat=None, inplace=True):
         """Tag the *sentence* with the FEATS-2 tagger.
 
         :param sentence: sentence in Parsed CONLL-U format; UPOS and LEMMA
                          fields must be already filled
         :type sentence: list(dict)
-        :param joint: if True, use joint FEATS-2 model; elsewise use separate
+        :param joint: if True, use joint FEATS-2 model; elsewise, use separate
                       models (default)
         :param with_backoff: if result of the tagger differs from both base
                              taggers, get one of the bases on the ground of
                              some heuristics
         :param max_repeats: repeat a prediction step based on the previous one
-                            until changes in prediction are diminishing and
-                            ``max_repeats`` is not reached. 0 means one repeat
-                            only for tokens where FEATS-1 taggers don't concur
+                            while changes in prediction are diminishing and
+                            ``max_repeats`` is not reached. 0 means one
+                            repeat - only for tokens where FEATS-1 taggers
+                            don't concur
         :type max_repeats: int
-        :param feat: name of the feat to tag; if None then all possible feats
+        :param feat: name of the feat to tag; if None, then all possible feats
                      will be tagged
         :type feat: str
         :param inplace: if True, method changes and returns the given sentence
-                        itself; elsewise new sentence will be created
+                        itself; elsewise, new sentence will be created
         :return: tagged sentence in Parsed CONLL-U format
         """
         return (
@@ -248,8 +246,8 @@ class MorphParser2(MorphParser):
             feat=feat, inplace=inplace
         )
 
-    def _predict_feats2_separate (self, sentence, with_backoff=True,
-                                  max_repeats=0, feat=None, inplace=True):
+    def _predict_feats2_separate(self, sentence, with_backoff=True,
+                                 max_repeats=0, feat=None, inplace=True):
         cdict = self._cdict
         models = self._feats2_models
         assert models, \
@@ -345,8 +343,8 @@ class MorphParser2(MorphParser):
                 i_ += 1
         return sentence
 
-    def _predict_feats2_joint (self, sentence, with_backoff=True, feat=None,
-                               max_repeats=0, inplace=True):
+    def _predict_feats2_joint(self, sentence, with_backoff=True, feat=None,
+                              max_repeats=0, inplace=True):
         assert not feat, 'ERROR: feat must be None with joint=True'
         cdict = self._cdict
         model = self._feats2_model
@@ -425,9 +423,9 @@ class MorphParser2(MorphParser):
             i_ += 1
         return sentence
 
-    def predict2 (self, sentence, pos_backoff=True, pos_repeats=0,
-                  feats_joint=False, feats_backoff=True, feats_repeats=0,
-                  inplace=True):
+    def predict2(self, sentence, pos_backoff=True, pos_repeats=0,
+                 feats_joint=False, feats_backoff=True, feats_repeats=0,
+                 inplace=True):
         """Tag the *sentence* with the all available taggers.
 
         :param sentence: sentence in Parsed CONLL-U format
@@ -436,23 +434,24 @@ class MorphParser2(MorphParser):
                            base taggers, get one of the bases on the ground
                            of some heuristics
         :param pos_repeats: repeat a prediction step based on the previous one
-                            until changes in prediction are diminishing and
-                            ``max_repeats`` is not reached. 0 means one repeat
-                            only for tokens where POS-1 taggers don't concur
+                            while changes in prediction are diminishing and
+                            ``max_repeats`` is not reached. 0 means one
+                            repeat - only for tokens where POS-1 taggers
+                            don't concur
         :type pos_repeats: int
-        :param feats_joint: if True, use joint model; elsewise use separate
+        :param feats_joint: if True, use joint model; elsewise, use separate
                             models (default)
         :type feats_backoff: if result of FEATS-2 tagger differs from both its
                              base taggers, get one of the bases on the ground
                              of some heuristics
         :param feats_repeats: repeat a prediction step based on the previous
-                              one until changes in prediction are diminishing
+                              one while changes in prediction are diminishing
                               and ``max_repeats`` is not reached. 0 means one
-                              repeat only for tokens where FEATS-1 taggers
+                              repeat - only for tokens where FEATS-1 taggers
                               don't concur
         :type feats_repeats: int
         :param inplace: if True, method changes and returns the given sentence
-                        itself; elsewise new sentence will be created
+                        itself; elsewise, new sentence will be created
         :return: tagged sentence in Parsed CONLL-U format
         """
         return \
@@ -468,23 +467,24 @@ class MorphParser2(MorphParser):
                 max_repeats=feats_repeats, inplace=inplace
             )
 
-    def predict_pos2_sents (self, sentences=None, with_backoff=True,
-                            max_repeats=0, inplace=True, save_to=None):
+    def predict_pos2_sents(self, sentences=None, with_backoff=True,
+                           max_repeats=0, inplace=True, save_to=None):
         """Apply ``self.predict_pos2()`` to each element of *sentences*.
 
         :param sentences: a name of file in CONLL-U format or list/iterator of
-                          sentences in Parsed CONLL-U. If None then loaded test
-                          corpus is used
+                          sentences in Parsed CONLL-U. If None, then loaded
+                          test corpus is used
         :param with_backoff: if result of the tagger differs from both base
                              taggers, get one of the bases on the ground of
                              some heuristics
         :param max_repeats: repeat a prediction step based on the previous one
-                            until changes in prediction are diminishing and
-                            ``max_repeats`` is not reached. 0 means one repeat
-                            only for tokens where POS-1 taggers don't concur
+                            while changes in prediction are diminishing and
+                            ``max_repeats`` is not reached. 0 means one
+                            repeat - only for tokens where POS-1 taggers don't
+                            concur
         :type max_repeats: int
         :param inplace: if True, method changes and returns the given
-                        sentences themselves; elsewise new list of sentences
+                        sentences themselves; elsewise, new list of sentences
                         will be created
         :param save_to: if not None then the result will be saved to the file
                         with a specified name
@@ -501,29 +501,30 @@ class MorphParser2(MorphParser):
             save_to=save_to
         )
 
-    def predict_feats2_sents (self, sentences=None, joint=False,
-                              with_backoff=True, max_repeats=0, feat=None,
-                              inplace=True, save_to=None):
+    def predict_feats2_sents(self, sentences=None, joint=False,
+                             with_backoff=True, max_repeats=0, feat=None,
+                             inplace=True, save_to=None):
         """Apply ``self.predict_feats2()`` to each element of *sentences*.
 
         :param sentences: a name of file in CONLL-U format or list/iterator of
-                          sentences in Parsed CONLL-U. If None then loaded test
-                          corpus is used
-        :param joint: if True, use joint FEATS-2 model; elsewise use separate
+                          sentences in Parsed CONLL-U. If None, then loaded
+                          test corpus is used
+        :param joint: if True, use joint FEATS-2 model; elsewise, use separate
                       models (default)
         :param with_backoff: if result of the tagger differs from both base
                              taggers, get one of the bases on the ground of
                              some heuristics
         :param max_repeats: repeat a prediction step based on the previous one
-                            until changes in prediction are diminishing and
-                            ``max_repeats`` is not reached. 0 means one repeat
-                            only for tokens where FEATS-1 taggers don't concur
+                            while changes in prediction are diminishing and
+                            ``max_repeats`` is not reached. 0 means one
+                            repeat - only for tokens where FEATS-1 taggers
+                            don't concur
         :type max_repeats: int
-        :param feat: name of the feat to tag; if None then all feats will be
+        :param feat: name of the feat to tag; if None, then all feats will be
                      tagged
         :type feat: str
         :param inplace: if True, method changes and returns the given
-                        sentences themselves; elsewise the new list of
+                        sentences themselves; elsewise, the new list of
                         sentences will be created
         :param save_to: if not None then the result will be saved to the file
                         with a specified name
@@ -540,35 +541,36 @@ class MorphParser2(MorphParser):
             save_to=save_to
         )
 
-    def predict2_sents (self, sentences=None, pos_backoff=True, pos_repeats=0,
-                        feats_joint=False, feats_backoff=True, feats_repeats=0,
-                        inplace=True, save_to=None):
+    def predict2_sents(self, sentences=None, pos_backoff=True, pos_repeats=0,
+                       feats_joint=False, feats_backoff=True, feats_repeats=0,
+                       inplace=True, save_to=None):
         """Apply ``self.predict2()`` to each element of *sentences*.
 
         :param sentences: a name of file in CONLL-U format or list/iterator of
-                          sentences in Parsed CONLL-U. If None then loaded test
-                          corpus is used
+                          sentences in Parsed CONLL-U. If None, then loaded
+                          test corpus is used
         :type pos_backoff: if result of POS-2 tagger differs from both its
                            base taggers, get one of the bases on the ground
                            of some heuristics
         :param pos_repeats: repeat a prediction step based on the previous one
-                            until changes in prediction are diminishing and
-                            ``max_repeats`` is not reached. 0 means one repeat
-                            only for tokens where POS-1 taggers don't concur
+                            while changes in prediction are diminishing and
+                            ``max_repeats`` is not reached. 0 means one
+                            repeat - only for tokens where POS-1 taggers
+                            don't concur
         :type pos_repeats: int
-        :param feats_joint: if True, use joint model; elsewise use separate
+        :param feats_joint: if True, use joint model; elsewise, use separate
                             models (default)
         :type feats_backoff: if result of FEATS-2 tagger differs from both its
                             base taggers, get one of the bases on the ground
                             of some heuristics
         :param feats_repeats: repeat a prediction step based on the previous
-                              one until changes in prediction are diminishing
+                              one while changes in prediction are diminishing
                               and ``max_repeats`` is not reached. 0 means one
-                              repeat only for tokens where FEATS-1 taggers
+                              repeat - only for tokens where FEATS-1 taggers
                               don't concur
         :type feats_repeats: int
         :param inplace: if True, method changes and returns the given
-                        sentences themselves; elsewise new list of sentences
+                        sentences themselves; elsewise, new list of sentences
                         will be created
         :param save_to: if not None then the result will be saved to the file
                         with a specified name
@@ -586,8 +588,8 @@ class MorphParser2(MorphParser):
             save_to=save_to
         )
 
-    def evaluate_pos2 (self, gold=None, test=None, pos=None, with_backoff=True,
-                       max_repeats=0, unknown_only=False, silent=False):
+    def evaluate_pos2(self, gold=None, test=None, pos=None, with_backoff=True,
+                      max_repeats=0, unknown_only=False, silent=False):
         """Score the accuracy of the POS tagger against the gold standard.
         Remove POS tags from the gold standard text, retag it using the tagger,
         then compute the accuracy score. If test is not None, compute the
@@ -596,18 +598,19 @@ class MorphParser2(MorphParser):
         :param gold: a corpus of tagged sentences to score the tagger on.
                      If gold is None then loaded test corpus is used
         :param test: a corpus of tagged sentences to compare with gold
-        :param pos: name of the tag to evaluate the tagger; if None then
+        :param pos: name of the tag to evaluate the tagger; if None, then
                     tagger will be evaluated for all tags
         :param with_backoff: if result of the tagger differs from both base
                              taggers, get one of the bases on the ground of
                              some heuristics
         :param max_repeats: repeat a prediction step based on the previous one
-                            until changes in prediction are diminishing and
-                            ``max_repeats`` is not reached. 0 means one repeat
-                            only for tokens where POS-1 taggers don't concur
+                            while changes in prediction are diminishing and
+                            ``max_repeats`` is not reached. 0 means one
+                            repeat - only for tokens where POS-1 taggers
+                            don't concur
         :type max_repeats: int
-        :param unknown_only: calculate accuracy score only for words that not
-                             present in train corpus
+        :param unknown_only: calculate accuracy score only for words that are
+                             not present in train corpus
         :param silent: suppress log
         :return: accuracy score of the tagger against the gold
         :rtype: float
@@ -623,9 +626,9 @@ class MorphParser2(MorphParser):
         del self.predict_pos_
         return res
 
-    def evaluate_feats2 (self, gold=None, test=None, joint=False,
-                         with_backoff=True, max_repeats=0, feat=None,
-                         unknown_only=False, silent=False):
+    def evaluate_feats2(self, gold=None, test=None, joint=False,
+                        with_backoff=True, max_repeats=0, feat=None,
+                        unknown_only=False, silent=False):
         """Score the accuracy of the FEATS-2 tagger against the gold standard.
         Remove feats (or only one specified feat) from the gold standard text,
         generate new feats using the tagger, then compute the accuracy score.
@@ -635,21 +638,22 @@ class MorphParser2(MorphParser):
         :param gold: a corpus of tagged sentences to score the tagger on.
                      If gold is None then loaded test corpus is used
         :param test: a corpus of tagged sentences to compare with gold
-        :param joint: if True, use joint FEATS-2 model; elsewise use separate
+        :param joint: if True, use joint FEATS-2 model; elsewise, use separate
                       models (default)
         :param with_backoff: if result of the tagger differs from both base
                              taggers, get one of the bases on the ground of
                              some heuristics
         :param max_repeats: repeat a prediction step based on the previous one
-                            until changes in prediction are diminishing and
-                            ``max_repeats`` is not reached. 0 means one repeat
-                            only for tokens where FEATS-1 taggers don't concur
+                            while changes in prediction are diminishing and
+                            ``max_repeats`` is not reached. 0 means one
+                            repeat - only for tokens where FEATS-1 taggers
+                            don't concur
         :type max_repeats: int
-        :param feat: name of the feat to evaluate the tagger; if None then
+        :param feat: name of the feat to evaluate the tagger; if None, then
                      tagger will be evaluated for all feats
         :type feat: str
-        :param unknown_only: calculate accuracy score only for words that not
-                             present in train corpus
+        :param unknown_only: calculate accuracy score only for words that are
+                             not present in train corpus
         :param silent: suppress log
         :return: accuracy scores of the tagger against the gold:
                  1. by tokens: the tagging of the whole token may be either
@@ -671,9 +675,9 @@ class MorphParser2(MorphParser):
         self.predict_feats = f
         return res
 
-    def evaluate2 (self, gold=None, test=None, pos_backoff=True, pos_repeats=0,
-                   feats_joint=False, feats_backoff=True, feats_repeats=0,
-                   feat=None, unknown_only=False, silent=False):
+    def evaluate2(self, gold=None, test=None, pos_backoff=True, pos_repeats=0,
+                  feats_joint=False, feats_backoff=True, feats_repeats=0,
+                  feat=None, unknown_only=False, silent=False):
         """Score a joint accuracy of the all available taggers against the
         gold standard. Extract wforms from the gold standard text, retag it
         using all the taggers, then compute a joint accuracy score. If test is
@@ -687,26 +691,27 @@ class MorphParser2(MorphParser):
                            base taggers, get one of the bases on the ground
                            of some heuristics
         :param pos_repeats: repeat a prediction step based on the previous one
-                            until changes in prediction are diminishing and
-                            ``max_repeats`` is not reached. 0 means one repeat
-                            only for tokens where POS-1 taggers don't concur
+                            while changes in prediction are diminishing and
+                            ``max_repeats`` is not reached. 0 means one
+                            repeat - only for tokens where POS-1 taggers
+                            don't concur
         :type pos_repeats: int
-        :param feats_joint: if True, use joint model; elsewise use separate
+        :param feats_joint: if True, use joint model; elsewise, use separate
                             models (default)
         :type feats_backoff: if result of FEATS-2 tagger differs from both its
                             base taggers, get one of the bases on the ground
                             of some heuristics
         :param feats_repeats: repeat a prediction step based on the previous
-                              one until changes in prediction are diminishing
+                              one while changes in prediction are diminishing
                               and ``max_repeats`` is not reached. 0 means one
-                              repeat only for tokens where FEATS-1 taggers
+                              repeat - only for tokens where FEATS-1 taggers
                               don't concur
         :type feats_repeats: int
-        :param feat: name of the feat to evaluate the tagger; if None then
+        :param feat: name of the feat to evaluate the tagger; if None, then
                      tagger will be evaluated for all feats
         :type feat: str
-        :param unknown_only: calculate accuracy score only for words that not
-                             present in train corpus
+        :param unknown_only: calculate accuracy score only for words that are
+                             not present in train corpus
         :param silent: suppress log
         :return: joint accuracy scores of the taggers against the gold:
                  1. by tokens: the tagging of the whole token may be either
@@ -731,11 +736,11 @@ class MorphParser2(MorphParser):
         self.predict = f
         return res
 
-    def train_pos2 (self, epochs=5, test_max_repeats=0, no_train_evals=True,
-                    seed=None, dropout=None, context_dropout=None):
+    def train_pos2(self, epochs=5, test_max_repeats=0, no_train_evals=True,
+                   seed=None, dropout=None, context_dropout=None):
         """Train a POS-2 tagger from ``self._train_corpus``.
 
-        :param epochs: number of training iterations. If epochs < 0 then the
+        :param epochs: number of training iterations. If epochs < 0, then the
                        best model will be searched based on evaluation of test
                        corpus. The search will be stopped when the result of
                        next |epochs| iterations will be worse than the best
@@ -849,17 +854,17 @@ class MorphParser2(MorphParser):
             {'with_backoff': False, 'max_repeats': test_max_repeats}
         )
 
-    def train_feats2 (self, joint=False, feat=None, epochs=5,
-                      test_max_repeats=0, no_train_evals=True, seed=None,
-                      dropout=None, context_dropout=None):
+    def train_feats2(self, joint=False, feat=None, epochs=5,
+                     test_max_repeats=0, no_train_evals=True, seed=None,
+                     dropout=None, context_dropout=None):
         """Train FEATS-2 taggers from ``self._train_corpus``.
 
-        :param joint: if True, use joint FEATS-2 model; elsewise use separate
+        :param joint: if True, use joint FEATS-2 model; elsewise, use separate
                       models (default)
-        :param feat: name of the feat to evaluate the tagger; if None then
+        :param feat: name of the feat to evaluate the tagger; if None, then
                      tagger will be evaluated for all feats
         :type feat: str
-        :param epochs: number of training iterations. If epochs < 0 then the
+        :param epochs: number of training iterations. If epochs < 0, then the
                        best model will be searched based on evaluation of test
                        corpus. The search will be stopped when the result of
                        next |epochs| iterations will be worse than the best
@@ -889,9 +894,9 @@ class MorphParser2(MorphParser):
             seed=seed, dropout=dropout, context_dropout=context_dropout
         )
 
-    def _train_feats2_separate (self, feat=None, epochs=5,
-                                no_train_evals=True, test_max_repeats=0,
-                                seed=None, dropout=None, context_dropout=None):
+    def _train_feats2_separate(self, feat=None, epochs=5,
+                               no_train_evals=True, test_max_repeats=0,
+                               seed=None, dropout=None, context_dropout=None):
         cdict, corpus_len, progress_step, progress_check_step, \
                               epochs, epochs_ = self._train_init(epochs, seed)
 
@@ -1011,9 +1016,9 @@ class MorphParser2(MorphParser):
         return res if feat else \
                f_evaluate(joint=False, rev=rev, feat=feat, silent=True)
 
-    def _train_feats2_joint (self, feat=None, epochs=5,
-                             no_train_evals=True, test_max_repeats=0,
-                             seed=None, dropout=None, context_dropout=None):
+    def _train_feats2_joint(self, feat=None, epochs=5,
+                            no_train_evals=True, test_max_repeats=0,
+                            seed=None, dropout=None, context_dropout=None):
         cdict, corpus_len, progress_step, progress_check_step, \
                               epochs, epochs_ = self._train_init(epochs, seed)
         assert not feat, 'ERROR: feat must be None with joint=True'

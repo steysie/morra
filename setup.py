@@ -49,7 +49,8 @@ setup(
     packages=find_packages(exclude=['doc', 'examples', 'scripts', 'tests']),
     install_requires=[
         'corpuscula',
-        'pymorphy2'
+        'pymorphy2',
+        'scipy'
     ],
     include_package_data=True,
     python_requires='>=3.5',

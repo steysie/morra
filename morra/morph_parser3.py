@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Morra project: Morphological parser 3
 #
-# Copyright (C) 2019-present by Sergei Ternovykh
+# Copyright (C) 2020-present by Sergei Ternovykh
 # License: BSD, see LICENSE for details
 """
 Get the results of join and separate FEATS-2 taggers and make adjusted
@@ -9,19 +9,15 @@ tagging on the ground of them. POS tagger did not change.
 """
 from copy import deepcopy
 
-###
-import sys
-sys.path.append('../')
-###
-from .morph_parser2 import MorphParser2
+from morra.morph_parser2 import MorphParser2
 
 
 class MorphParser3(MorphParser2):
 
-    def predict_feats3 (self, sentence,
-                        with_s_backoff=True, max_s_repeats=0,
-                        with_j_backoff=True, max_j_repeats=0,
-                        inplace=True):
+    def predict_feats3(self, sentence,
+                       with_s_backoff=True, max_s_repeats=0,
+                       with_j_backoff=True, max_j_repeats=0,
+                       inplace=True):
         """Tag the *sentence* with the FEATS-3 tagger.
 
         :param sentence: sentence in Parsed CONLL-U format; UPOS and LEMMA
@@ -41,7 +37,7 @@ class MorphParser3(MorphParser2):
         :param max_j_repeats: parameter for ``predict_feats2(joint=True)``
         :type max_j_repeats: int
         :param inplace: if True, method changes and returns the given sentence
-                        itself; elsewise new sentence will be created
+                        itself; elsewise, new sentence will be created
         :return: tagged sentence in Parsed CONLL-U format
         """
         if not inplace:
@@ -69,9 +65,9 @@ class MorphParser3(MorphParser2):
                 feats.pop(feat, None)
         return sentence
 
-    def predict3 (self, sentence, pos_backoff=True, pos_repeats=0,
-                  feats_s_backoff=True, feats_s_repeats=0,
-                  feats_j_backoff=True, feats_j_repeats=0, inplace=True):
+    def predict3(self, sentence, pos_backoff=True, pos_repeats=0,
+                 feats_s_backoff=True, feats_s_repeats=0,
+                 feats_j_backoff=True, feats_j_repeats=0, inplace=True):
         """Tag the *sentence* with the all available taggers.
 
         :param sentence: sentence in Parsed CONLL-U format
@@ -92,7 +88,7 @@ class MorphParser3(MorphParser2):
         :param feats_j_repeats: parameter for ``predict_feats3()``
         :type feats_j_repeats: int
         :param inplace: if True, method changes and returns the given sentence
-                        itself; elsewise new sentence will be created
+                        itself; elsewise, new sentence will be created
         :return: tagged sentence in Parsed CONLL-U format
         """
         return \
@@ -109,15 +105,15 @@ class MorphParser3(MorphParser2):
                 inplace=inplace
            )
 
-    def predict_feats3_sents (self, sentences=None,
-                              with_s_backoff=True, max_s_repeats=0,
-                              with_j_backoff=True, max_j_repeats=0,
-                              inplace=True, save_to=None):
+    def predict_feats3_sents(self, sentences=None,
+                             with_s_backoff=True, max_s_repeats=0,
+                             with_j_backoff=True, max_j_repeats=0,
+                             inplace=True, save_to=None):
         """Apply ``self.predict_feats2()`` to each element of *sentences*.
 
         :param sentences: a name of file in CONLL-U format or list/iterator of
-                          sentences in Parsed CONLL-U. If None then loaded test
-                          corpus is used
+                          sentences in Parsed CONLL-U. If None, then loaded
+                          test corpus is used
         :type with_s_backoff: if result of separate FEATS-2 tagger differs
                               from both its base taggers, get one of the bases
                               on the ground of some heuristics
@@ -129,7 +125,7 @@ class MorphParser3(MorphParser2):
         :param max_j_repeats: parameter for ``predict_feats3()``
         :type max_j_repeats: int
         :param inplace: if True, method changes and returns the given
-                        sentences themselves; elsewise the new list of
+                        sentences themselves; elsewise, the new list of
                         sentences will be created
         :param save_to: if not None then the result will be saved to the file
                         with a specified name
@@ -148,16 +144,16 @@ class MorphParser3(MorphParser2):
             save_to=save_to
         )
 
-    def predict3_sents (self, sentences=None,
-                        pos_backoff=True, pos_repeats=0,
-                        feats_s_backoff=True, feats_s_repeats=0,
-                        feats_j_backoff=True, feats_j_repeats=0,
-                        inplace=True, save_to=None):
+    def predict3_sents(self, sentences=None,
+                       pos_backoff=True, pos_repeats=0,
+                       feats_s_backoff=True, feats_s_repeats=0,
+                       feats_j_backoff=True, feats_j_repeats=0,
+                       inplace=True, save_to=None):
         """Apply ``self.predict2()`` to each element of *sentences*.
 
         :param sentences: a name of file in CONLL-U format or list/iterator of
-                          sentences in Parsed CONLL-U. If None then loaded test
-                          corpus is used
+                          sentences in Parsed CONLL-U. If None, then loaded
+                          test corpus is used
         :type pos_backoff: if result of POS-2 tagger differs from both its
                            base taggers, get one of the bases on the ground
                            of some heuristics
@@ -173,7 +169,7 @@ class MorphParser3(MorphParser2):
         :param feats_j_repeats: parameter for ``predict3()``
         :type feats_j_repeats: int
         :param inplace: if True, method changes and returns the given
-                        sentences themselves; elsewise new list of sentences
+                        sentences themselves; elsewise, new list of sentences
                         will be created
         :param save_to: if not None then the result will be saved to the file
                         with a specified name
@@ -194,10 +190,10 @@ class MorphParser3(MorphParser2):
             save_to=save_to
         )
 
-    def evaluate_feats3 (self, gold=None, test=None,
-                         with_s_backoff=True, max_s_repeats=0,
-                         with_j_backoff=True, max_j_repeats=0,
-                         feat=None, silent=False):
+    def evaluate_feats3(self, gold=None, test=None,
+                        with_s_backoff=True, max_s_repeats=0,
+                        with_j_backoff=True, max_j_repeats=0,
+                        feat=None, silent=False):
         """Score the accuracy of the FEATS-2 tagger against the gold standard.
         Remove feats (or only one specified feat) from the gold standard text,
         generate new feats using the tagger, then compute the accuracy score.
@@ -217,7 +213,7 @@ class MorphParser3(MorphParser2):
                                on the ground of some heuristics
         :param max_j_repeats: parameter for ``predict_feats3()``
         :type max_j_repeats: int
-        :param feat: name of the feat to evaluate the tagger; if None then
+        :param feat: name of the feat to evaluate the tagger; if None, then
                      tagger will be evaluated for all feats
         :type feat: str
         :param silent: suppress log
@@ -242,11 +238,11 @@ class MorphParser3(MorphParser2):
         self.predict_feats = f
         return res
 
-    def evaluate3 (self, gold=None, test=None,
-                   pos_backoff=True, pos_repeats=0,
-                   feats_s_backoff=True, feats_s_repeats=0,
-                   feats_j_backoff=True, feats_j_repeats=0,
-                   feat=None, silent=False):
+    def evaluate3(self, gold=None, test=None,
+                  pos_backoff=True, pos_repeats=0,
+                  feats_s_backoff=True, feats_s_repeats=0,
+                  feats_j_backoff=True, feats_j_repeats=0,
+                  feat=None, silent=False):
         """Score a joint accuracy of the all available taggers against the
         gold standard. Extract wforms from the gold standard text, retag it
         using all the taggers, then compute a joint accuracy score.  If test is
@@ -270,7 +266,7 @@ class MorphParser3(MorphParser2):
                                on the ground of some heuristics
         :param feats_j_repeats: parameter for ``predict3()``
         :type feats_j_repeats: int
-        :param feat: name of the feat to evaluate the tagger; if None then
+        :param feat: name of the feat to evaluate the tagger; if None, then
                      tagger will be evaluated for all feats
         :type feat: str
         :param silent: suppress log

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Morra project: Features for MorphParserNE
 #
-# Copyright (C) 2019-present by Sergei Ternovykh
+# Copyright (C) 2020-present by Sergei Ternovykh
 # License: BSD, see LICENSE for details
 """
 If you need MorphParserNE to support your language, add feature-functions for
@@ -9,20 +9,20 @@ your language here. Then, create parser as:
 
     ``MorphParserNE(features='<your lang>')``
 """
-from .base_features import BaseFeatures
+from morra.base_features import BaseFeatures
 
 
 class FeaturesNE(BaseFeatures):
     """Features for MorphParserNE"""
 
-    def __init__ (self, lang='RU'):
+    def __init__(self, lang='RU'):
         super().__init__(lang=lang)
         if lang == 'RU':
             self.get_ne_features = self.get_ne_features_RU
             self.get_ne2_features = self.get_ne2_features_RU
 
-    def get_ne_features_RU (self, i, context, lemma_context, pos_context,
-                            feats_context, prev, prev2):
+    def get_ne_features_RU(self, i, context, lemma_context, pos_context,
+                           feats_context, prev, prev2):
         prev  = str(prev)
         prev2 = str(prev2)
 
@@ -104,8 +104,8 @@ class FeaturesNE(BaseFeatures):
         self.add_feature(features, '+2p', pos_f2)
         return features
 
-    def get_ne2_features_RU (self, i, context, lemma_context, pos_context,
-                             feats_context, ne_context):
+    def get_ne2_features_RU(self, i, context, lemma_context, pos_context,
+                            feats_context, ne_context):
         context       = self.START +       context + self.END
         lemma_context = self.START + lemma_context + self.END
         pos_context   = self.START +   pos_context + self.END

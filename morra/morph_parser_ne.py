@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Morra project: Named Entity tagger
 #
-# Copyright (C) 2019-present by Sergei Ternovykh
+# Copyright (C) 2020-present by Sergei Ternovykh
 # License: BSD, see LICENSE for details
 """
 Adjusting Morphological parser's models for Named Entity Recognition. It
@@ -14,20 +14,16 @@ import pickle
 import random
 import sys
 
-###
-import sys
-sys.path.append('../')
-###
 from corpuscula.corpus_utils import _AbstractCorpus
 from corpuscula.utils import LOG_FILE, print_progress, vote
-from .base_parser import _AveragedPerceptron, BaseParser
-from .features_ne import FeaturesNE
+from morra.base_parser import _AveragedPerceptron, BaseParser
+from morra.features_ne import FeaturesNE
 
 
 class MorphParserNE(BaseParser):
     """Named Entity parser"""
 
-    def __init__ (self, features='RU', guess_ne=None):
+    def __init__(self, features='RU', guess_ne=None):
         super().__init__()
         self.features = FeaturesNE(lang=features) \
             if isinstance(features, str) else features
@@ -42,7 +38,7 @@ class MorphParserNE(BaseParser):
         self._ne_rev_models = {}
         self._ne2_models    = {}
 
-    def backup (self):
+    def backup(self):
         """Get current state"""
         o = super().backup()
         o.update({'ne_freq'              : self._ne_freq,
@@ -66,7 +62,7 @@ class MorphParserNE(BaseParser):
                   }})
         return o
 
-    def restore (self, o):
+    def restore(self, o):
         """Restore current state from backup object"""
         super().restore(o)
         (self._ne_freq        ,
@@ -113,13 +109,13 @@ class MorphParserNE(BaseParser):
                 model = models[ne] = _AveragedPerceptron()
                 model.weights = weights
 
-    def _save_ne_model (self, file_path):
+    def _save_ne_model(self, file_path):
         with open(file_path, 'wb') as f:
             pickle.dump((self._ne_freq,
                          self._ne_model.weights if self._ne_model else
                          None), f, 2)
 
-    def _load_ne_model (self, file_path):
+    def _load_ne_model(self, file_path):
         with open(file_path, 'rb') as f:
             self._ne_freq, weights = pickle.load(f)
             if weights:
@@ -128,13 +124,13 @@ class MorphParserNE(BaseParser):
             else:
                 self._ne_model = None
 
-    def _save_ne_rev_model (self, file_path):
+    def _save_ne_rev_model(self, file_path):
         with open(file_path, 'wb') as f:
             pickle.dump((self._ne_freq,
                          self._ne_rev_model.weights if self._ne_rev_model else
                          None), f, 2)
 
-    def _load_ne_rev_model (self, file_path):
+    def _load_ne_rev_model(self, file_path):
         with open(file_path, 'rb') as f:
             self._ne_freq, weights = pickle.load(f)
             if weights:
@@ -143,13 +139,13 @@ class MorphParserNE(BaseParser):
             else:
                 self._ne_rev_model = None
 
-    def _save_ne2_model (self, file_path):
+    def _save_ne2_model(self, file_path):
         with open(file_path, 'wb') as f:
             pickle.dump((self._ne_freq,
                          self._ne2_model.weights if self._ne2_model else
                          None), f, 2)
 
-    def _load_ne2_model (self, file_path):
+    def _load_ne2_model(self, file_path):
         with open(file_path, 'rb') as f:
             self._ne_freq, weights = pickle.load(f)
             if weights:
@@ -158,7 +154,7 @@ class MorphParserNE(BaseParser):
             else:
                 self._ne2_model = None
 
-    def _save_ne_models (self, file_path, feat=None):
+    def _save_ne_models(self, file_path, feat=None):
         with open(file_path, 'wb') as f:
             pickle.dump((
                 self._ne_freq,
@@ -166,7 +162,7 @@ class MorphParserNE(BaseParser):
                 {x: y.weights for x, y in self._ne_models.items()}
             ), f, 2)
 
-    def _load_ne_models (self, file_path):
+    def _load_ne_models(self, file_path):
         with open(file_path, 'rb') as f:
             self._ne_freq, o = pickle.load(f)
             if isinstance(o, tuple):
@@ -179,7 +175,7 @@ class MorphParserNE(BaseParser):
                     model = models[feat] = _AveragedPerceptron()
                     model.weights = weights
 
-    def _save_ne_rev_models (self, file_path, feat=None):
+    def _save_ne_rev_models(self, file_path, feat=None):
         with open(file_path, 'wb') as f:
             pickle.dump((
                 self._ne_freq,
@@ -187,7 +183,7 @@ class MorphParserNE(BaseParser):
                 {x: y.weights for x, y in self._ne_rev_models.items()}
             ), f, 2)
 
-    def _load_ne_rev_models (self, file_path):
+    def _load_ne_rev_models(self, file_path):
         with open(file_path, 'rb') as f:
             self._ne_freq, o = pickle.load(f)
             if isinstance(o, tuple):
@@ -200,7 +196,7 @@ class MorphParserNE(BaseParser):
                     model = models[feat] = _AveragedPerceptron()
                     model.weights = weights
 
-    def _save_ne2_models (self, file_path, feat=None):
+    def _save_ne2_models(self, file_path, feat=None):
         with open(file_path, 'wb') as f:
             pickle.dump((
                 self._ne_freq,
@@ -208,7 +204,7 @@ class MorphParserNE(BaseParser):
                 {x: y.weights for x, y in self._ne2_models.items()}
             ), f, 2)
 
-    def _load_ne2_models (self, file_path):
+    def _load_ne2_models(self, file_path):
         with open(file_path, 'rb') as f:
             self._ne_freq, o = pickle.load(f)
             if isinstance(o, tuple):
@@ -221,20 +217,20 @@ class MorphParserNE(BaseParser):
                     model = models[feat] = _AveragedPerceptron()
                     model.weights = weights
 
-    def predict_ne (self, sentence, joint=True, rev=False, ne=None,
-                    inplace=True, no_final_clean=False):
+    def predict_ne(self, sentence, joint=True, rev=False, ne=None,
+                   inplace=True, no_final_clean=False):
         """Tag the *sentence* with the NE tagger.
 
         :param sentence: sentence in Parsed CONLL-U format
         :type sentence: list(dict)
-        :param joint: if True, use joint NE model (default); elsewise use
+        :param joint: if True, use joint NE model (default); elsewise, use
                       separate models
         :param rev: if True, use Reversed NE tagger instead of generic
                     straight one
         :param ne: predict only specified NE. Can be used only with joint=False
         :type ne: str
         :param inplace: if True, method changes and returns the given sentence
-                        itself; elsewise new sentence will be created
+                        itself; elsewise, new sentence will be created
         :param no_final_clean: don't search and remove NE from empty nodes
         :return: tagged sentence in Parsed CONLL-U format
         """
@@ -242,26 +238,26 @@ class MorphParserNE(BaseParser):
                 self._predict_ne_separate)(sentence, rev=rev, ne=ne,
                                            inplace=inplace)
 
-    def predict_ne2 (self, sentence, joint=True, with_backoff=True,
-                     max_repeats=0, ne=None, inplace=True, no_final_clean=False):
+    def predict_ne2(self, sentence, joint=True, with_backoff=True,
+                    max_repeats=0, ne=None, inplace=True, no_final_clean=False):
         """Tag the *sentence* with the NE-2 tagger.
 
         :param sentence: sentence in Parsed CONLL-U format
         :type sentence: list(dict)
-        :param joint: if True, use joint NE-2 model (default); elsewise use
+        :param joint: if True, use joint NE-2 model (default); elsewise, use
                       separate models
         :param with_backoff: if result of the tagger differs from both base
                              taggers, get one of the bases on the ground of
                              some heuristics
         :param max_repeats: repeat a prediction step based on the previous one
-                            until changes in prediction are diminishing and
+                            while changes in prediction are diminishing and
                             ``max_repeats`` is not reached. 0 means one repeat
                             only for tokens where NE-1 taggers don't concur
         :type max_repeats: int
         :param ne: predict only specified NE. Can be used only with joint=False
         :type ne: str
         :param inplace: if True, method changes and returns the given sentence
-                        itself; elsewise new sentence will be created
+                        itself; elsewise, new sentence will be created
         :param no_final_clean: don't search and remove NE from empty nodes
         :return: tagged sentence in Parsed CONLL-U format
         """
@@ -273,8 +269,8 @@ class MorphParserNE(BaseParser):
             ne=ne, inplace=inplace
         )
 
-    def _predict_ne_joint (self, sentence, rev=False,
-                           ne=None, inplace=True, no_final_clean=False):
+    def _predict_ne_joint(self, sentence, rev=False,
+                          ne=None, inplace=True, no_final_clean=False):
         assert not ne, 'ERROR: ne must be None with joint=True'
         cdict = self._cdict
         model = self._ne_rev_model if rev else self._ne_model
@@ -331,8 +327,8 @@ class MorphParserNE(BaseParser):
                 misc.pop('NE', None)
         return sentence
 
-    def _predict_ne_separate (self, sentence, rev=False,
-                              ne=None, inplace=True, no_final_clean=None):
+    def _predict_ne_separate(self, sentence, rev=False,
+                             ne=None, inplace=True, no_final_clean=None):
         cdict = self._cdict
         models = self._ne_rev_models if rev else self._ne_models
         assert models, 'ERROR: Use train_ne(joint=False{}) prior ' \
@@ -388,8 +384,8 @@ class MorphParserNE(BaseParser):
                     misc['NE'] = ne
         return sentence
 
-    def _predict_ne2_joint (self, sentence, with_backoff=True, max_repeats=0,
-                            ne=None, inplace=True, no_final_clean=False):
+    def _predict_ne2_joint(self, sentence, with_backoff=True, max_repeats=0,
+                           ne=None, inplace=True, no_final_clean=False):
         assert not ne, 'ERROR: ne must be None with joint=True'
         cdict = self._cdict
         model = self._ne2_model
@@ -473,9 +469,9 @@ class MorphParserNE(BaseParser):
             i_ += 1
         return sentence
 
-    def _predict_ne2_separate (self, sentence, with_backoff=True,
-                               max_repeats=0, ne=None, inplace=True,
-                               no_final_clean=None):
+    def _predict_ne2_separate(self, sentence, with_backoff=True,
+                              max_repeats=0, ne=None, inplace=True,
+                              no_final_clean=None):
         cdict = self._cdict
         models = self._ne2_models
         assert models, \
@@ -565,10 +561,10 @@ class MorphParserNE(BaseParser):
                 i_ += 1
         return sentence
 
-    def predict_ne3 (self, sentence,
-                     with_s_backoff=True, max_s_repeats=0,
-                     with_j_backoff=True, max_j_repeats=0,
-                     inplace=True):
+    def predict_ne3(self, sentence,
+                    with_s_backoff=True, max_s_repeats=0,
+                    with_j_backoff=True, max_j_repeats=0,
+                    inplace=True):
         """Tag the *sentence* with the NE-3 tagger.
 
         :param sentence: sentence in Parsed CONLL-U format
@@ -584,7 +580,7 @@ class MorphParserNE(BaseParser):
         :param max_j_repeats: parameter for ``predict_ne2(joint=True)``
         :type max_j_repeats: int
         :param inplace: if True, method changes and returns the given sentence
-                        itself; elsewise new sentence will be created
+                        itself; elsewise, new sentence will be created
         :return: tagged sentence in Parsed CONLL-U format
         """
         if not inplace:
@@ -607,22 +603,22 @@ class MorphParserNE(BaseParser):
                 token['MISC'].pop('NE', None)
         return sentence
 
-    def predict_ne_sents (self, sentences=None, joint=True, rev=False,
-                          ne=None, inplace=True, save_to=None):
+    def predict_ne_sents(self, sentences=None, joint=True, rev=False,
+                         ne=None, inplace=True, save_to=None):
         """Apply ``self.predict_ne()`` to each element of *sentences*.
 
-        :param sentences: a name of file in CONLL-U format or list/iterator of
-                          sentences in Parsed CONLL-U. If None then loaded test
-                          corpus is used
-        :param joint: if True, use joint NE model (default); elsewise use
+        :param sentences: a name of a file in CONLL-U format or list/iterator
+                          of sentences in Parsed CONLL-U. If None, then loaded
+                          test corpus is used
+        :param joint: if True, use joint NE model (default); elsewise, use
                       separate models
         :param rev: if True, use Reversed NE tagger instead of generic
                     straight one
-        :param ne: name of the NE to tag; if None then all possible NEs will be
-                   tagged. Must be None if joint=True
+        :param ne: name of the NE to tag; if None, then all possible NEs will
+                   be tagged. Must be None if joint=True
         :type ne: str
         :param inplace: if True, method changes and returns the given
-                        sentences themselves; elsewise new list of sentences
+                        sentences themselves; elsewise, new list of sentences
                         will be created
         :param save_to: if not None then the result will be saved to the file
                         with a specified name
@@ -638,28 +634,28 @@ class MorphParserNE(BaseParser):
             save_to=save_to
         )
 
-    def predict_ne2_sents (self, sentences=None, joint=True, with_backoff=True,
-                           max_repeats=0, ne=None, inplace=True, save_to=None):
+    def predict_ne2_sents(self, sentences=None, joint=True, with_backoff=True,
+                          max_repeats=0, ne=None, inplace=True, save_to=None):
         """Apply ``self.predict_ne2()`` to each element of *sentences*.
 
-        :param sentences: a name of file in CONLL-U format or list/iterator of
-                          sentences in Parsed CONLL-U. If None then loaded test
-                          corpus is used
-        :param joint: if True, use joint NE-2 model (default); elsewise use
+        :param sentences: a name of a file in CONLL-U format or list/iterator
+                          of sentences in Parsed CONLL-U. If None, then loaded
+                          test corpus is used
+        :param joint: if True, use joint NE-2 model (default); elsewise, use
                       separate models
         :param with_backoff: if result of the tagger differs from both base
                              taggers, get one of the bases on the ground of
                              some heuristics
         :param max_repeats: repeat a prediction step based on the previous one
-                            until changes in prediction are diminishing and
+                            while changes in prediction are diminishing and
                             ``max_repeats`` is not reached. 0 means one repeat
                             only for tokens where NE-1 taggers don't concur
         :type max_repeats: int
-        :param ne: name of the NE to tag; if None then all possible NEs will be
-                   tagged. Must be None if joint=True
+        :param ne: name of the NE to tag; if None, then all possible NEs will
+                   be tagged. Must be None if joint=True
         :type ne: str
         :param inplace: if True, method changes and returns the given
-                        sentences themselves; elsewise new list of sentences
+                        sentences themselves; elsewise, new list of sentences
                         will be created
         :param save_to: if not None then the result will be saved to the file
                         with a specified name
@@ -676,15 +672,15 @@ class MorphParserNE(BaseParser):
             save_to=save_to
         )
 
-    def predict_ne3_sents (self, sentences=None, inplace=True,
-                           with_s_backoff=True, max_s_repeats=0,
-                           with_j_backoff=True, max_j_repeats=0,
-                           save_to=None):
+    def predict_ne3_sents(self, sentences=None, inplace=True,
+                          with_s_backoff=True, max_s_repeats=0,
+                          with_j_backoff=True, max_j_repeats=0,
+                          save_to=None):
         """Apply ``self.predict_ne3()`` to each element of *sentences*.
 
         :param sentences: a name of file in CONLL-U format or list/iterator of
-                          sentences in Parsed CONLL-U. If None then loaded test
-                          corpus is used
+                          sentences in Parsed CONLL-U. If None, then loaded
+                          test corpus is used
         :param with_s_backoff: if result of the separate NE-1 tagger differs
                                from both base taggers, get one of the bases
                                on the ground of some heuristics
@@ -696,7 +692,7 @@ class MorphParserNE(BaseParser):
         :param max_j_repeats: parameter for ``predict_ne3()``
         :type max_j_repeats: int
         :param inplace: if True, method changes and returns the given
-                        sentences themselves; elsewise new list of sentences
+                        sentences themselves; elsewise, new list of sentences
                         will be created
         :param save_to: if not None then the result will be saved to the file
                         with a specified name
@@ -715,8 +711,8 @@ class MorphParserNE(BaseParser):
             save_to=save_to
         )
 
-    def evaluate_ne (self, gold=None, test=None, joint=True, rev=False,
-                     ne=None, silent=False):
+    def evaluate_ne(self, gold=None, test=None, joint=True, rev=False,
+                    ne=None, silent=False):
         """Score the accuracy of the NE tagger against the gold standard.
         Remove NE tags from the gold standard text, retag it using the tagger,
         then compute the accuracy score. If test is not None, compute the
@@ -725,11 +721,11 @@ class MorphParserNE(BaseParser):
         :param gold: a corpus of tagged sentences to score the tagger on.
                      If gold is None then loaded test corpus is used
         :param test: a corpus of tagged sentences to compare with gold
-        :param joint: if True, use joint NE model (default); elsewise use
+        :param joint: if True, use joint NE model (default); elsewise, use
                       separate models
         :param rev: if True, use Reversed NE tagger instead of generic
                     straight one
-        :param ne: name of the NE to evaluate; if None then all possible NEs
+        :param ne: name of the NE to evaluate; if None, then all possible NEs
                    will be evaluated
         :type ne: str
         :param silent: suppress log
@@ -803,8 +799,8 @@ class MorphParserNE(BaseParser):
                 print('[Total accuracy: {}]'.format(cc / nn if nn > 0 else 1.))
         return c / n if n > 0 else 1.
 
-    def evaluate_ne2 (self, gold=None, test=None, joint=True,
-                      with_backoff=True, max_repeats=0, ne=None, silent=False):
+    def evaluate_ne2(self, gold=None, test=None, joint=True,
+                     with_backoff=True, max_repeats=0, ne=None, silent=False):
         """Score the accuracy of the NE-2 tagger against the gold standard.
         Remove NE tags from the gold standard text, retag it using the tagger,
         then compute the accuracy score. If test is not None, compute the
@@ -813,17 +809,17 @@ class MorphParserNE(BaseParser):
         :param gold: a corpus of tagged sentences to score the tagger on.
                      If gold is None then loaded test corpus is used
         :param test: a corpus of tagged sentences to compare with gold
-        :param joint: if True, use joint NE-2 model (default); elsewise use
+        :param joint: if True, use joint NE-2 model (default); elsewise, use
                       separate models
         :type with_backoff: if result of the tagger differs from both base
                             taggers, get one of the bases on the ground of some
                             heuristics
         :param max_repeats: repeat a prediction step based on the previous one
-                            until changes in prediction are diminishing and
+                            while changes in prediction are diminishing and
                             ``max_repeats`` is not reached. 0 means one repeat
                             only for tokens where NE-1 taggers don't concur
         :type max_repeats: int
-        :param ne: name of the NE to evaluate; if None then all possible NEs
+        :param ne: name of the NE to evaluate; if None, then all possible NEs
                    will be evaluated
         :type ne: str
         :param silent: suppress log
@@ -844,9 +840,9 @@ class MorphParserNE(BaseParser):
         self.predict_ne_sents = f
         return res
 
-    def evaluate_ne3 (self, gold=None, test=None,
-                      with_s_backoff=True, max_s_repeats=0,
-                      with_j_backoff=True, max_j_repeats=0, silent=False):
+    def evaluate_ne3(self, gold=None, test=None,
+                     with_s_backoff=True, max_s_repeats=0,
+                     with_j_backoff=True, max_j_repeats=0, silent=False):
         """Score the accuracy of the NE-3 tagger against the gold standard.
         Remove NE tags from the gold standard text, retag it using the tagger,
         then compute the accuracy score. If test is not None, compute the
@@ -883,16 +879,16 @@ class MorphParserNE(BaseParser):
         self.predict_ne_sents = f
         return res
 
-    def train_ne (self, joint=True, rev=False, ne=None, epochs=5,
-                  no_train_evals=True, seed=None, dropout=None,
-                  context_dropout=None):
+    def train_ne(self, joint=True, rev=False, ne=None, epochs=5,
+                 no_train_evals=True, seed=None, dropout=None,
+                 context_dropout=None):
         """Train a NE tagger from ``self._train_corpus``.
 
-        :param joint: if True, train joint NE model (default); elsewise train
+        :param joint: if True, train joint NE model (default); elsewise, train
                       separate models
         :param rev: if True, train Reversed NE tagger instead of generic
                     straight one
-        :param epochs: number of training iterations. If epochs < 0 then the
+        :param epochs: number of training iterations. If epochs < 0, then the
                        best model will be searched based on evaluation of test
                        corpus. The search will be stopped when the result of
                        next |epochs| iterations will be worse than the best
@@ -915,14 +911,14 @@ class MorphParserNE(BaseParser):
                                          no_train_evals=no_train_evals,
                                          seed=seed)
 
-    def train_ne2 (self, joint=True, ne=None, epochs=5,
-                   test_max_repeats=0, no_train_evals=True, seed=None,
-                   dropout=None, context_dropout=None):
+    def train_ne2(self, joint=True, ne=None, epochs=5,
+                  test_max_repeats=0, no_train_evals=True, seed=None,
+                  dropout=None, context_dropout=None):
         """Train a NE-2 tagger from ``self._train_corpus``.
 
-        :param joint: if True, train joint NE-2 model (default); elsewise train
-                      separate models
-        :param epochs: number of training iterations. If epochs < 0 then the
+        :param joint: if True, train joint NE-2 model (default); elsewise,
+                      train separate models
+        :param epochs: number of training iterations. If epochs < 0, then the
                        best model will be searched based on evaluation of test
                        corpus. The search will be stopped when the result of
                        next |epochs| iterations will be worse than the best
@@ -951,9 +947,9 @@ class MorphParserNE(BaseParser):
             seed=seed
         )
 
-    def _train_ne_joint (self, rev=False, ne=None, epochs=5,
-                         no_train_evals=True, seed=None,
-                         dropout=None, context_dropout=None):
+    def _train_ne_joint(self, rev=False, ne=None, epochs=5,
+                        no_train_evals=True, seed=None,
+                        dropout=None, context_dropout=None):
         cdict, corpus_len, progress_step, progress_check_step, \
                                                            epochs, epochs_ = \
                         self._train_init(epochs, seed, allow_empty_cdict=True)
@@ -1068,9 +1064,9 @@ class MorphParserNE(BaseParser):
             self.evaluate_ne, {'joint': True, 'rev': rev}
         )
 
-    def _train_ne_separate (self, rev=False, ne=None, epochs=5,
-                            no_train_evals=True, seed=None, dropout=None,
-                            context_dropout=None):
+    def _train_ne_separate(self, rev=False, ne=None, epochs=5,
+                           no_train_evals=True, seed=None, dropout=None,
+                           context_dropout=None):
         cdict, corpus_len, progress_step, progress_check_step, \
                                                            epochs, epochs_ = \
                         self._train_init(epochs, seed, allow_empty_cdict=True)
@@ -1180,9 +1176,9 @@ class MorphParserNE(BaseParser):
         return res if ne else \
                f_evaluate(joint=False, rev=rev, ne=ne, silent=True)
 
-    def _train_ne2_joint (self, ne=None, epochs=5,
-                          no_train_evals=True, test_max_repeats=0, seed=None,
-                          dropout=None, context_dropout=None):
+    def _train_ne2_joint(self, ne=None, epochs=5,
+                         no_train_evals=True, test_max_repeats=0, seed=None,
+                         dropout=None, context_dropout=None):
         cdict, corpus_len, progress_step, progress_check_step, \
                                                            epochs, epochs_ = \
                         self._train_init(epochs, seed, allow_empty_cdict=True)
@@ -1287,9 +1283,9 @@ class MorphParserNE(BaseParser):
                                 'max_repeats': test_max_repeats}
         )
 
-    def _train_ne2_separate (self, ne=None, epochs=5,
-                             no_train_evals=True, test_max_repeats=0,
-                             seed=None, dropout=None, context_dropout=None):
+    def _train_ne2_separate(self, ne=None, epochs=5,
+                            no_train_evals=True, test_max_repeats=0,
+                            seed=None, dropout=None, context_dropout=None):
         cdict, corpus_len, progress_step, progress_check_step, \
                                                            epochs, epochs_ = \
                         self._train_init(epochs, seed, allow_empty_cdict=True)

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Morra project: Base parser
 #
-# Copyright (C) 2019-present by Sergei Ternovykh
+# Copyright (C) 2020-present by Sergei Ternovykh
 # License: BSD, see LICENSE for details
 """
 Base classes for the project.
@@ -15,10 +15,6 @@ from random import random as rand
 from scipy.special import softmax
 import sys
 
-###
-import sys
-sys.path.append('../')
-###
 from corpuscula import Conllu, CorpusDict
 from corpuscula.corpus_utils import _AbstractCorpus
 from corpuscula.utils import LOG_FILE, print_progress
@@ -34,7 +30,7 @@ class _AveragedPerceptron:
 
     Small changes and extra comments where added"""
 
-    def __init__ (self, default_class=None):
+    def __init__(self, default_class=None):
         """
         :param default_class: the most common class of the train set;
                               uses only on the first train iterations
@@ -56,8 +52,8 @@ class _AveragedPerceptron:
         # you can ignore None class or replace it with smth meaningful)
         self.default_class = default_class
 
-    def predict (self, features, suggest=None, suggest_coef=None,
-                 with_score=False, dropout=0):
+    def predict(self, features, suggest=None, suggest_coef=None,
+                with_score=False, dropout=0):
         """Dot-product the features and current weights and return the best
         label.
 
@@ -105,10 +101,10 @@ class _AveragedPerceptron:
                        None
         return res
 
-    def update (self, truth, guess, features):
+    def update(self, truth, guess, features):
         """Update the feature weights"""
         # self.weights: {feature: {class: weight}}
-        def upd_feat (c, f, w, v):
+        def upd_feat(c, f, w, v):
             # param = (feature, class)
             param = (f, c)
             # для каждой пары "фича-класс" сохраняем:
@@ -134,7 +130,7 @@ class _AveragedPerceptron:
             if guess is not None:
                 upd_feat(guess, f, weights.get(guess, 0.0), -1.0)
 
-    def average_weights (self):
+    def average_weights(self):
         """Average weights from all iterations"""
         for feat, weights in self.weights.items():
             new_feat_weights = {}
@@ -150,7 +146,7 @@ class _AveragedPerceptron:
                     new_feat_weights[clas] = averaged
             self.weights[feat] = new_feat_weights
 
-    def get_classes (self):
+    def get_classes(self):
         """Classes found during train process"""
         return set(
             [x for x in self.weights.values() for x in x.keys()]
@@ -162,30 +158,30 @@ class _AveragedPerceptron:
 class BaseParser:
     """Base class for all parsers of the project"""
 
-    def __init__ (self):
+    def __init__(self):
         self._cdict = CorpusDict(log_file=LOG_FILE)
 
         self._train_corpus = []
         self._test_corpus  = []
 
-    def backup (self):
+    def backup(self):
         """Get current state"""
         return {'cdict_backup': self._cdict.backup()}
 
-    def restore (self, o):
+    def restore(self, o):
         """Restore current state from backup object"""
         cdict_backup = o.get('cdict_backup')
         if cdict_backup:
             self._cdict.restore(cdict_backup)
 
-    def save (self, file_path):
+    def save(self, file_path):
         print('Saving model...', end=' ', file=LOG_FILE)
         LOG_FILE.flush()
         with open(file_path, 'wb') as f:
             pickle.dump(self.backup(), f, 2)
             print('done.', file=LOG_FILE)
 
-    def load (self, file_path):
+    def load(self, file_path):
         print('Loading model...', end=' ', file=LOG_FILE)
         LOG_FILE.flush()
         with open(file_path, 'rb') as f:
@@ -193,29 +189,29 @@ class BaseParser:
             print('done.', file=LOG_FILE)
             self.restore(o)
 
-    def _save_cdict (self, file_path):
+    def _save_cdict(self, file_path):
         self._cdict.backup_to(file_path)
 
-    def _load_cdict (self, file_path):
+    def _load_cdict(self, file_path):
         self._cdict.restore_from(file_path)
 
     @staticmethod
-    def load_conllu (*args, **kwargs):
+    def load_conllu(*args, **kwargs):
         """Wrapper for ``Conllu.load()``"""
         silent = kwargs.pop('silent', None)
         return Conllu.load(*args, **kwargs,
                            log_file=None if silent else LOG_FILE)
 
     @staticmethod
-    def save_conllu (*args, **kwargs):
+    def save_conllu(*args, **kwargs):
         """Wrapper for ``Conllu.save()``"""
         silent = kwargs.pop('silent', None)
         return Conllu.save(*args, **kwargs,
                            log_file=None if silent else LOG_FILE)
 
     @staticmethod
-    def split_corpus (corpus, split=[.8, .1, .1], save_split_to=None,
-                      seed=None, silent=False):
+    def split_corpus(corpus, split=[.8, .1, .1], save_split_to=None,
+                     seed=None, silent=False):
         assert save_split_to is None or len(save_split_to) == len(split), \
                'ERROR: lengths of split and save_split_to must be equal'
         isfloat = len([x for x in split if isinstance(x, float)]) > 0
@@ -246,13 +242,13 @@ class BaseParser:
         return res
 
     @classmethod
-    def _get_corpus (cls, corpus, asis=False, silent=False):
+    def _get_corpus(cls, corpus, asis=False, silent=False):
         if isinstance(corpus, str):
             corpus = cls.load_conllu(corpus, silent=silent)
         return (s[0] if not asis and isinstance(s, tuple) else s
                    for s in corpus)
 
-    def _predict_sents (self, sentences, predict_method, save_to=None):
+    def _predict_sents(self, sentences, predict_method, save_to=None):
         silent_save = False
         if sentences is None:
             sentences = deepcopy(self._test_corpus)
@@ -268,7 +264,7 @@ class BaseParser:
             sentences = self._get_corpus(save_to, asis=True)
         return sentences
 
-    def parse_train_corpus (self, cnt_thresh=None, ambiguity_thresh=None):
+    def parse_train_corpus(self, cnt_thresh=None, ambiguity_thresh=None):
         """Create a CorpusDict for train corpus(es) loaded. For one instance it
         may be used only once. Use ``load_train_corpus()`` with append=True
         to append one more corpus to the CorpusDict after it's created.
@@ -290,8 +286,8 @@ class BaseParser:
                                  format='conllu_parsed',
                                  **kwargs, log_file=LOG_FILE)
 
-    def load_train_corpus (self, corpus, append=False, parse=False, test=None,
-                           seed=None):
+    def load_train_corpus(self, corpus, append=False, parse=False, test=None,
+                          seed=None):
         """Load train corpus and (possibly) create a CorpusDict for it
 
         :param corpus: a name of file in CONLL-U format or list/iterator of
@@ -299,12 +295,12 @@ class BaseParser:
         :param append: add corpus to already loaded one(s)
         :param parse: extract corpus statistics to CorpusDict right after
                       loading
-        :param test: if not None then trainset is shuffled and specified part
-                     of it stored as test corpus
+        :param test: if not None, then train corpus will be shuffled and
+                     specified part of it stored as test corpus
+        :type test: float
         :param seed: init value for the random number generator. Used only 
                      if test is not None
         :type seed: int
-        :type test: float
         """
         assert append or not self._train_corpus, \
                'ERROR: Train corpus is already loaded. Use append=True to ' \
@@ -345,7 +341,7 @@ class BaseParser:
                                          format='conllu_parsed',
                                          log_file=LOG_FILE)
 
-    def load_test_corpus (self, corpus, append=False):
+    def load_test_corpus(self, corpus, append=False):
         """Load development test corpus to validate on during training
         iterations.
 
@@ -375,8 +371,8 @@ class BaseParser:
             self._test_corpus = []
         self._test_corpus.extend(corpus)
 
-    def remove_rare_feats (self, abs_thresh=None, rel_thresh=None,
-                           full_rel_thresh=None):
+    def remove_rare_feats(self, abs_thresh=None, rel_thresh=None,
+                          full_rel_thresh=None):
         """Remove feats from train and test corpora, occurence of which
         in the train corpus is less then threshold.
 
@@ -452,7 +448,7 @@ class BaseParser:
                       .format(train_removes, test_removes),
                   file=LOG_FILE)
 
-    def _train_init (self, epochs, seed, allow_empty_cdict=False):
+    def _train_init(self, epochs, seed, allow_empty_cdict=False):
         cdict = self._cdict
         assert self._train_corpus, 'ERROR: Train corpus is not loaded'
         if not allow_empty_cdict:
@@ -474,11 +470,11 @@ class BaseParser:
         return cdict, corpus_len, progress_step, progress_check_step, \
                                                                epochs, epochs_
 
-    def _train_eval (self, model, epoch, epochs, epochs_,
-                     best_epoch, best_score, best_weights,
-                     eqs, bads, prev_score,
-                     td, fd, td2, fd2, tp, fp, c, n, no_train_evals,
-                     f_evaluate, f_evaluate_args):
+    def _train_eval(self, model, epoch, epochs, epochs_,
+                    best_epoch, best_score, best_weights,
+                    eqs, bads, prev_score,
+                    td, fd, td2, fd2, tp, fp, c, n, no_train_evals,
+                    f_evaluate, f_evaluate_args):
         if td is not None:
             print('dict   : correct: {}, wrong: {}, accuracy: {}'
                       .format(td, fd, round(td / (td + fd), 4)
@@ -546,8 +542,8 @@ class BaseParser:
         return epoch + 1, epochs, best_epoch, best_score, best_weights, \
                eqs, bads, score
 
-    def _train_done (self, header, model, eqs, no_train_evals,
-                     f_evaluate, f_evaluate_args):
+    def _train_done(self, header, model, eqs, no_train_evals,
+                    f_evaluate, f_evaluate_args):
         if eqs >= 0:
             model.average_weights()
         res = None
@@ -572,10 +568,10 @@ class BaseParser:
         return res
 
 results = []
-def autotrain (train_func, *args, silent=False,
-               backup_model_func=None, restore_model_func=None,
-               reload_trainset_func=None, fit_params={}, params_in_process={},
-               **kwargs):
+def autotrain(train_func, *args, silent=False,
+              backup_model_func=None, restore_model_func=None,
+              reload_trainset_func=None, fit_params={}, params_in_process={},
+              **kwargs):
     global results
     if not silent:
         print('AUTOTRAIN model STARTED', file=LOG_FILE)
@@ -631,7 +627,7 @@ def autotrain (train_func, *args, silent=False,
         print(file=LOG_FILE)
     return res
 
-def _evaluate (test_corpus, gold_corpus, what=None, feat=None, silent=False):
+def _evaluate(test_corpus, gold_corpus, what=None, feat=None, silent=False):
     """Score a joint accuracy of the all available tagger against the
     gold standard. Extract wforms from the gold standard text, retag them
     using all the taggers, then compute a joint accuracy score.

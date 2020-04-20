@@ -8,14 +8,15 @@
 A part of ***RuMor*** project. It provides tools to organize a pipeline for
 complete morphological sentence parsing Named-entity recognition.
 
+Scores on *SynTagRus*: accuracy `98.50%` for POS tagging; `98.73%` for lemmata
+detection.
+
 This project was making with a focus on Russian language, but it can be also
 used with some other languages (European, at least).
 
 ## Installation
 
 ### pip
-
-.. Note::
 
 ***Morra*** supports *Python 3.5* or later. To install it via *pip*, run:
 ```sh
@@ -40,11 +41,19 @@ This gives you access to examples that are not included to the *PyPI* package.
 
 ## Usage
 
-[Part of Speach tagging](https://github.com/fostroll/morra/blob/master/doc/README_POS.md)
+Input and output format for ***Morra*** is
+[*CONLL-U*](https://universaldependencies.org/format.html) when input or
+output is a file, or
+[*Parsed CONLL-U*](https://github.com/fostroll/corpuscula/blob/master/doc/README_PARSED_CONLLU.md)
+if it is an object. Also, it allows
+[***Corpuscula***'s corpora wrappers](https://github.com/fostroll/corpuscula/blob/master/doc/README_CORPORA.md)
+as input.
 
-[Lemmata detection](https://github.com/fostroll/morra/blob/master/doc/README_LEMMA.md)
+[Part of Speach Tagging](https://github.com/fostroll/morra/blob/master/doc/README_POS.md)
 
-[Morphological feats tagging](https://github.com/fostroll/morra/blob/master/doc/README_FEATS.md)
+[Lemmata Detection](https://github.com/fostroll/morra/blob/master/doc/README_LEMMA.md)
+
+[Morphological Feats Tagging](https://github.com/fostroll/morra/blob/master/doc/README_FEATS.md)
 
 [Named-entity Recognition](https://github.com/fostroll/morra/blob/master/doc/README_NER.md)
 

@@ -44,14 +44,10 @@ setup(
         'Programming Language :: Python :: 3.8',
     ],
     # What does your project relate to?
-    keywords='natural-language-processing nlp conllu corpora',
+    keywords='natural-language-processing nlp morphology',
 
     packages=find_packages(exclude=['doc', 'examples', 'scripts', 'tests']),
-    install_requires=[
-        'corpuscula',
-        'pymorphy2',
-        'scipy'
-    ],
+    install_requires=['corpuscula', 'pymorphy2', 'scipy'],
     include_package_data=True,
     python_requires='>=3.5',
 )

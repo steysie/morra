@@ -1,21 +1,70 @@
 <div align="right"><strong>RuMor: Russian Morphology project</strong></div>
 <h2 align="center">Morra: morphological parser (POS, lemmata, NER etc.)</h2>
 
-## Part of Speach Tagging
+## Lemmata Detection
 
-First of all, we need to create the parser object and load training data.
-You can find a complete explanation in
-[MorphParser Basics](https://github.com/fostroll/morra/blob/master/doc/README_BASICS.md)
-chapter.
+For lemmata detection you need training corpus already POS-tagged.
+[Part of Speach Tagging](https://github.com/fostroll/morra/blob/master/doc/README_POS.md)
+
+First of all, we need to create the parser object. The simplest way is:
+```python
+from morra import MorphParser3
+mp = MorphParser3()
+```
+
+Usually, it's not enough for maximum scores achieving. Refer
+[MorphParser Setup](https://github.com/fostroll/morra/blob/master/doc/README_SETUP.md)
+for complete explanation. Also, you can find there description for methods
+that are common for all taggers (`.save()`, `.load()`, etc.) along with useful
+utilities.
+
+### Loading the Training Data
+
+Anyhow, the parser is created. Before start training process, we have to load
+train data.
+
+```python
+mp.load_train_corpus(corpus, append=False, parse=False, test=None, seed=None)
+```
+Here, **corpus** is a name of file in *CONLL-U* format or list/iterator of
+sentences in *Parsed CONLL-U*. Also, it allows one of the
+[***Corpuscula***'s corpora wrappers](https://github.com/fostroll/corpuscula/blob/master/doc/README_CORPORA.md)
+here. In that case, the `.train()` part will be used.
+
+**append**: add corpus to already loaded one(s).
+
+**parse**: extract corpus statistics right after loading.
+
+**test**: `float` (`0` .. `1`). If set, then **corpus** will be shuffled
+and specified part of it stored as development *test corpus*. The rest part
+will be stored as *train corpus*. Default is `None`: don't do that.
+
+**seed** (`int`): init value for random number generator. Default is `None`
+(don't set init value). Used only if **test** is not `None`.
+
+If you didn't specify the **test** param, you can load development *test
+corpus* directly:
+```python
+mp.load_test_corpus (corpus, append=False)
+```
+This corpus is used to validate model during training. You can train model
+without validation. This will be faster but not informative. And you can't
+use autostop feature.
+
+If you'll specify a ***Corpuscula***'s corpora wrapper here, the `.dev()` part
+will be used, or, if it doesn't exist, the `.test()` part.
+
+Then, if you didn't specify the **parse** param in `.load_train_corpus()`
+method, you should extract corpus statistics now:
+```python
+mp.parse_train_corpus (self, cnt_thresh=None, ambiguity_thresh=None)
+```
 
 ### Training
 
 ***Morra*** contains 3 POS taggers: 2 unidirectional (forward and backward)
 and bidirectional. Bidirectional uses results of unidirectional taggers, so we
 need to train them all.
-
-**NB:** On this step you have a parser object `mp` created and training data
-loaded.
 
 Training of unidirectional POS tagger:
 ```python

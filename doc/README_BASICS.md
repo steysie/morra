@@ -106,7 +106,7 @@ Anytime, you can backup and restore internal states of trained models:
 ```python
 o = mp.backup()
 mp.restore(o)
-\
+
 mp.save(file_path)
 mp.load(file_path)
 ```
@@ -125,7 +125,7 @@ mp._save_feats2_model(file_path)
 mp._save_feats_models(file_path)      # separate
 mp._save_feats_rev_models(file_path)
 mp._save_feats2_models(file_path)
-\
+
 mp._load_cdict(file_path)
 mp._load_pos_model(file_path)
 mp._load_pos_rev_model(file_path)
@@ -138,3 +138,184 @@ mp._load_feats_models(file_path)      # separate
 mp._load_feats_rev_models(file_path)
 mp._load_feats2_models(file_path)
 ```
+
+### Predict and Evaluate
+
+Apart from the separate methods for each *CONLL-U* field (refer the
+corresponding docs above), ***Morra*** have methods for predicting fields and
+evaluating models conjointly.
+
+#### Unidirectional Models
+
+Predict the fields of just one sentence:
+```python
+mp.predict(sentence, pos_rev=False, feats_joint=False,
+           feats_rev=False, inplace=True)
+```
+**sentence**: the sentence in *Parsed CONLL-U* format.
+
+**pos_rev**: if `False` (default), use forward POS tagger; backward elsewise.
+
+**feats_joint**: if `False` (default), use separate FEATS models; elsewise,
+use joint model.
+
+**feats_rev**: if `False` (default), use forward FEATS tagger; backward
+elsewise.
+
+**inplace**: if `True` (default), method changes and returns the given
+**sentence** itself. Elsewise, the new sentence will be created.
+
+Returns the **sentence** tagged, also in *Parsed CONLL-U* format.
+
+Predict the fields of the whole corpus:
+```python
+mp.predict_sents(sentences=None, pos_rev=False, feats_joint=False,
+                 feats_rev=False, inplace=True, save_to=None)
+```
+**sentences**: a name of the file in *CONLL-U* format or list/iterator of
+sentences in *Parsed CONLL-U*. If `None`, then loaded *test corpus* is used.
+You can specify a ***Corpuscula***'s corpora wrapper here. In that case, the
+`.test()` part will be used.
+
+**save_to**: the name of the file where you want to save the result. Default
+is `None`: we don't want to save.
+
+Returns iterator of tagged **sentences** in *Parsed CONLL-U* format.
+
+Evaluate conjoint prediction:
+```python
+mp.evaluate(gold=None, test=None, pos_rev=False,
+            feats_joint=False, feats_rev=False, feat=None,
+            unknown_only=False, silent=False)
+```
+Calculate joint accuracy score of the unidirectional POS, LEMMA and FEATS
+predictions on the **test** corpus against the **gold**. Both **gold** and
+**test** (like any input corpora in any ***Morra*** method) may be a name of
+the file in *CONLL-U* format or list/iterator of sentences in
+*Parsed CONLL-U*.
+
+If **gold** is `None` (default), then loaded *test corpus* is used. If
+**gold** is a ***Corpuscula***'s corpora wrapper, the `.test()` part will be
+used.
+
+If **test** is `None` (default), then the **gold** corpus will be retagged
+with unidirectional models and then the result will be compared with the
+original **gold** corpus.
+
+**pos_rev**: if `False` (default), use forward POS tagger; backward elsewise.
+
+**feats_joint**: if `False` (default), use separate FEATS models; elsewise,
+use joint model.
+
+**feats_rev**: if `False` (default), use forward FEATS tagger; backward
+elsewise.
+
+**feat**: calculate FEATS tagger accuracy wrt that only tag.
+
+**unknown_only**: calculate accuracy score only for words that are not present
+in the *train corpus* (the corpus must be loaded).
+
+**silent**: suppress output.
+
+Returns the accuracy scores wrt tokens and wrt tags.
+
+#### Bidirectional Models
+
+Predict fields of just one sentence:
+```python
+mp.predict2(sentence, pos_backoff=True, pos_repeats=0,
+            feats_joint=False, feats_backoff=True, feats_repeats=0,
+            inplace=True)
+```
+**sentence**: the sentence in *Parsed CONLL-U* format.
+
+**pos_backoff**: if the result of the bidirectional POS tagger differs from
+the results of both base unidirectional taggers, get one of the bases on the
+ground of some heuristics.
+
+**pos_repeats**: repeat a prediction step based on the previous one while
+changes in prediction are diminishing and **max_repeats** of the POS-2 tagger
+is not reached. `0` (default) means one repeat - only for tokens where POS-1
+taggers don't concur.
+
+**feats_joint**: if `True`, use joint model; elsewise, use separate models
+(default).
+
+**feats_backoff**: if result of bidirectional FEATS tagger differs from the
+results of both base unidirectional taggers, get one of the bases on the
+ground of some heuristics.
+
+**feats_repeats**: repeat a prediction step based on the previous one while
+changes in prediction are diminishing and ***max_repeats*** of the FEATS-2
+tagger is not reached. `0` (default) means one repeat - only for tokens where
+FEATS-1 taggers don't concur.
+
+**inplace**: if `True` (default), method changes and returns the given
+**sentence** itself. Elsewise, the new sentence will be created.
+
+Returns the **sentence** tagged, also in *Parsed CONLL-U* format.
+
+Next method can be used if both joint and separate FEATS-2 models are
+available:
+```python
+mp.predict3(sentence, pos_backoff=True, pos_repeats=0,
+            feats_s_backoff=True, feats_s_repeats=0,
+            feats_j_backoff=True, feats_j_repeats=0, inplace=True)
+```
+**feats_s_backoff**: if result of separate FEATS-2 tagger differs from both
+its base taggers, get one of the bases on the ground of some heuristics.
+
+**feats_s_repeats**: parameter for `predict_feats3()`
+
+**feats_j_backoff**: if result of joint FEATS-2 tagger differs from both its
+base taggers, get one of the bases on the ground of some heuristics.
+
+**feats_j_repeats**: parameter for ``predict_feats3()``
+
+Predict the fields of the whole corpus:
+```python
+mp.predict2_sents(self, sentences=None, pos_backoff=True, pos_repeats=0,
+                  feats_joint=False, feats_backoff=True, feats_repeats=0,
+                  inplace=True, save_to=None)
+```
+**sentences**: a name of the file in *CONLL-U* format or list/iterator of
+sentences in *Parsed CONLL-U*. If `None`, then loaded *test corpus* is used.
+You can specify a ***Corpuscula***'s corpora wrapper here. In that case, the
+`.test()` part will be used.
+
+**save_to**: the name of the file where you want to save the result. Default
+is `None`: we don't want to save.
+
+Returns iterator of tagged **sentences** in *Parsed CONLL-U* format.
+
+If both joint and separate FEATS-2 models are available:
+```python
+mp.predict3_sents(sentence, pos_backoff=True, pos_repeats=0,
+                  feats_s_backoff=True, feats_s_repeats=0,
+                  feats_j_backoff=True, feats_j_repeats=0, inplace=True)
+```
+All params where explained earlier.
+
+Returns iterator of tagged **sentences** in *Parsed CONLL-U* format.
+
+Evaluate conjoint prediction:
+```python
+mp.evaluate2(gold=None, test=None, pos_backoff=True, pos_repeats=0,
+             feats_joint=False, feats_backoff=True, feats_repeats=0,
+             feat=None, unknown_only=False, silent=False)
+```
+All params where explained earlier.
+
+Returns the accuracy scores wrt tokens and wrt tags.
+
+If both joint and separate FEATS-2 models are available:
+```python
+mp.evaluate3(gold=None, test=None,
+             pos_backoff=True, pos_repeats=0,
+             feats_s_backoff=True, feats_s_repeats=0,
+             feats_j_backoff=True, feats_j_repeats=0,
+             feat=None, silent=False)
+```
+All params where explained earlier.
+
+Returns the accuracy scores wrt tokens and wrt tags.

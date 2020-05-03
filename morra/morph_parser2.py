@@ -132,9 +132,9 @@ class MorphParser2(MorphParser):
                              some heuristics
         :param max_repeats: repeat a prediction step based on the previous one
                             while changes in prediction are diminishing and
-                            ``max_repeats`` is not reached. 0 means one
-                            repeat - only for tokens where POS-1 taggers don't
-                            concur
+                            ``max_repeats`` is not reached. 0 (default) means
+                            one repeat - only for tokens where POS-1 taggers
+                            don't concur
         :type max_repeats: int
         :param inplace: if True, method changes and returns the given sentence
                         itself; elsewise, new sentence will be created
@@ -227,8 +227,8 @@ class MorphParser2(MorphParser):
                              some heuristics
         :param max_repeats: repeat a prediction step based on the previous one
                             while changes in prediction are diminishing and
-                            ``max_repeats`` is not reached. 0 means one
-                            repeat - only for tokens where FEATS-1 taggers
+                            ``max_repeats`` is not reached. 0 (default) means
+                            one repeat - only for tokens where FEATS-1 taggers
                             don't concur
         :type max_repeats: int
         :param feat: name of the feat to tag; if None, then all possible feats
@@ -446,9 +446,9 @@ class MorphParser2(MorphParser):
                              of some heuristics
         :param feats_repeats: repeat a prediction step based on the previous
                               one while changes in prediction are diminishing
-                              and ``max_repeats`` is not reached. 0 means one
-                              repeat - only for tokens where FEATS-1 taggers
-                              don't concur
+                              and ``max_repeats`` is not reached. 0 (default)
+                              means one repeat - only for tokens where FEATS-1
+                              taggers don't concur
         :type feats_repeats: int
         :param inplace: if True, method changes and returns the given sentence
                         itself; elsewise, new sentence will be created
@@ -479,9 +479,9 @@ class MorphParser2(MorphParser):
                              some heuristics
         :param max_repeats: repeat a prediction step based on the previous one
                             while changes in prediction are diminishing and
-                            ``max_repeats`` is not reached. 0 means one
-                            repeat - only for tokens where POS-1 taggers don't
-                            concur
+                            ``max_repeats`` is not reached. 0 (default) means
+                            one repeat - only for tokens where POS-1 taggers
+                            don't concur
         :type max_repeats: int
         :param inplace: if True, method changes and returns the given
                         sentences themselves; elsewise, new list of sentences
@@ -516,8 +516,8 @@ class MorphParser2(MorphParser):
                              some heuristics
         :param max_repeats: repeat a prediction step based on the previous one
                             while changes in prediction are diminishing and
-                            ``max_repeats`` is not reached. 0 means one
-                            repeat - only for tokens where FEATS-1 taggers
+                            ``max_repeats`` is not reached. 0 (default) means
+                            one repeat - only for tokens where FEATS-1 taggers
                             don't concur
         :type max_repeats: int
         :param feat: name of the feat to tag; if None, then all feats will be
@@ -565,9 +565,9 @@ class MorphParser2(MorphParser):
                             of some heuristics
         :param feats_repeats: repeat a prediction step based on the previous
                               one while changes in prediction are diminishing
-                              and ``max_repeats`` is not reached. 0 means one
-                              repeat - only for tokens where FEATS-1 taggers
-                              don't concur
+                              and ``max_repeats`` is not reached. 0 (default)
+                              means one repeat - only for tokens where FEATS-1
+                              taggers don't concur
         :type feats_repeats: int
         :param inplace: if True, method changes and returns the given
                         sentences themselves; elsewise, new list of sentences
@@ -605,8 +605,8 @@ class MorphParser2(MorphParser):
                              some heuristics
         :param max_repeats: repeat a prediction step based on the previous one
                             while changes in prediction are diminishing and
-                            ``max_repeats`` is not reached. 0 means one
-                            repeat - only for tokens where POS-1 taggers
+                            ``max_repeats`` is not reached. 0 (default) means
+                            one repeat - only for tokens where POS-1 taggers
                             don't concur
         :type max_repeats: int
         :param unknown_only: calculate accuracy score only for words that are
@@ -645,8 +645,8 @@ class MorphParser2(MorphParser):
                              some heuristics
         :param max_repeats: repeat a prediction step based on the previous one
                             while changes in prediction are diminishing and
-                            ``max_repeats`` is not reached. 0 means one
-                            repeat - only for tokens where FEATS-1 taggers
+                            ``max_repeats`` is not reached. 0 (default) means
+                            one repeat - only for tokens where FEATS-1 taggers
                             don't concur
         :type max_repeats: int
         :param feat: name of the feat to evaluate the tagger; if None, then
@@ -703,9 +703,9 @@ class MorphParser2(MorphParser):
                             of some heuristics
         :param feats_repeats: repeat a prediction step based on the previous
                               one while changes in prediction are diminishing
-                              and ``max_repeats`` is not reached. 0 means one
-                              repeat - only for tokens where FEATS-1 taggers
-                              don't concur
+                              and ``max_repeats`` is not reached. 0 (default)
+                              means one repeat - only for tokens where FEATS-1
+                              taggers don't concur
         :type feats_repeats: int
         :param feat: name of the feat to evaluate the tagger; if None, then
                      tagger will be evaluated for all feats

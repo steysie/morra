@@ -111,9 +111,9 @@ mp.evaluate_pos(gold=None, test=None, rev=False, pos=None, unknown_only=False,
                 silent=False)
 ```
 Calculate accuracy score of the POS tagging of the **test** corpus against the
-**gold**. Both **gold** and **test** (like any input corpora in any **Morra**
-method) may be a name of the file in *CONLL-U* format or list/iterator of
-sentences in *Parsed CONLL-U*.
+**gold**. Both **gold** and **test** (like any input corpora in any
+***Morra*** method) may be a name of the file in *CONLL-U* format or
+list/iterator of sentences in *Parsed CONLL-U*.
 
 If **gold** is `None` (default), then loaded *test corpus* is used. If
 **gold** is a ***Corpuscula***'s corpora wrapper, the `.test()` part will be

@@ -68,7 +68,7 @@ the `.predict_pos2()` method (see further) diring evaluation step.
 ### Save and Loading trained Models
 
 See
-[MorphParser Setup](https://github.com/fostroll/morra/blob/master/doc/README_SETUP.md)
+[MorphParser Basics](https://github.com/fostroll/morra/blob/master/doc/README_BASICS.md)
 
 ### Predict and Evaluate
 

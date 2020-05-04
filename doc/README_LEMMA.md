@@ -15,7 +15,12 @@ chapter.
 
 For now, ***Morra*** doesn't contain its own LEMMA generator and use the one
 from ***Corpuscula*** package. Though, before make prediction you have to run
-method:
+dummy train method.
+
+**NB:** On this step you have a parser object `mp` created and training data
+loaded.
+
+Just run this method without params:
 ```python
 mp.train_lemma():
 ```
@@ -58,7 +63,8 @@ filled.
 
 Evaluate LEMMA generator:
 ```python
-mp.evaluate_lemma(gold=None, test=None, unknown_only=False, silent=False)
+score = mp.evaluate_lemma(gold=None, test=None, unknown_only=False,
+                          silent=False)
 ```
 Calculate accuracy score of the LEMMA generator on the **test** corpus against
 the **gold**. Both **gold** and **test** (like any input corpora in any

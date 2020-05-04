@@ -3,7 +3,7 @@
 
 ## MorphParser Basics
 
-## Initialization
+### Initialization
 
 First of all, we need to create the `MorphParser3` object. The simplest way to
 do it is:
@@ -75,7 +75,7 @@ will be stored as *train corpus*. Default is `None`: don't do that.
 If you didn't specify the **test** param, you can load development *test
 corpus* directly:
 ```python
-mp.load_test_corpus (corpus, append=False)
+mp.load_test_corpus(corpus, append=False)
 ```
 This corpus is used to validate model during training. You can train model
 without validation. This will be faster but not informative. And you can't
@@ -87,7 +87,7 @@ will be used, or, if it doesn't exist, the `.test()` part.
 Then, if you didn't specify the **parse** param in `.load_train_corpus()`
 method, you should extract corpus statistics now:
 ```python
-mp.parse_train_corpus (self, cnt_thresh=None, ambiguity_thresh=None)
+mp.parse_train_corpus(self, cnt_thresh=None, ambiguity_thresh=None)
 ```
 
 ### Training
@@ -143,7 +143,8 @@ mp._load_feats2_models(file_path)
 
 Apart from the separate methods for each *CONLL-U* field (refer the
 corresponding docs above), ***Morra*** have methods for predicting fields and
-evaluating models conjointly.
+evaluating models conjointly. Note, that you must already have trained models
+of all taggers for using those methods.
 
 #### Unidirectional Models
 
@@ -184,9 +185,9 @@ Returns iterator of tagged **sentences** in *Parsed CONLL-U* format.
 
 Evaluate conjoint prediction:
 ```python
-mp.evaluate(gold=None, test=None, pos_rev=False,
-            feats_joint=False, feats_rev=False, feat=None,
-            unknown_only=False, silent=False)
+score = mp.evaluate(gold=None, test=None, pos_rev=False,
+                    feats_joint=False, feats_rev=False, feat=None,
+                    unknown_only=False, silent=False)
 ```
 Calculate joint accuracy score of the unidirectional POS, LEMMA and FEATS
 predictions on the **test** corpus against the **gold**. Both **gold** and
@@ -300,9 +301,9 @@ Returns iterator of tagged **sentences** in *Parsed CONLL-U* format.
 
 Evaluate conjoint prediction:
 ```python
-mp.evaluate2(gold=None, test=None, pos_backoff=True, pos_repeats=0,
-             feats_joint=False, feats_backoff=True, feats_repeats=0,
-             feat=None, unknown_only=False, silent=False)
+score = mp.evaluate2(gold=None, test=None, pos_backoff=True, pos_repeats=0,
+                     feats_joint=False, feats_backoff=True, feats_repeats=0,
+                     feat=None, unknown_only=False, silent=False)
 ```
 All params where explained earlier.
 
@@ -310,11 +311,11 @@ Returns the accuracy scores wrt tokens and wrt tags.
 
 If both joint and separate FEATS-2 models are available:
 ```python
-mp.evaluate3(gold=None, test=None,
-             pos_backoff=True, pos_repeats=0,
-             feats_s_backoff=True, feats_s_repeats=0,
-             feats_j_backoff=True, feats_j_repeats=0,
-             feat=None, silent=False)
+score = mp.evaluate3(gold=None, test=None,
+                     pos_backoff=True, pos_repeats=0,
+                     feats_s_backoff=True, feats_s_repeats=0,
+                     feats_j_backoff=True, feats_j_repeats=0,
+                     feat=None, silent=False)
 ```
 All params where explained earlier.
 

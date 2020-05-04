@@ -1077,12 +1077,12 @@ class MorphParser(BaseParser):
                     context_dropout=None):
         """Train FEATS taggers from ``self._train_corpus``.
 
-        :param joint: if True, train joint FEATS model; elsewise, use separate
-                      models (default)
+        :param joint: if True, train joint FEATS model; elsewise, train
+                      separate models (default)
         :param rev: if True, train Reversed FEATS tagger instead of generic
                     straight one
-        :param feat: name of the feat to evaluate the tagger; if None, then
-                     tagger will be evaluated for all feats
+        :param feat: name of the feat to evaluate the tagger; if None
+                     (default), then tagger will be evaluated for all feats
         :type feat: str
         :param epochs: number of training iterations. If epochs < 0, then the
                        best model will be searched based on evaluation of test

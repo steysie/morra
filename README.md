@@ -49,6 +49,8 @@ if it is an object. Also, it allows
 [***Corpuscula***'s corpora wrappers](https://github.com/fostroll/corpuscula/blob/master/doc/README_CORPORA.md)
 as input.
 
+[MorphParser Basics](https://github.com/fostroll/morra/blob/master/doc/README_BASICS.md)
+
 [Part of Speach Tagging](https://github.com/fostroll/morra/blob/master/doc/README_POS.md)
 
 [Lemmata Detection](https://github.com/fostroll/morra/blob/master/doc/README_LEMMA.md)

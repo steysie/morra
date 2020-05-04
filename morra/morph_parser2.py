@@ -588,8 +588,9 @@ class MorphParser2(MorphParser):
             save_to=save_to
         )
 
-    def evaluate_pos2(self, gold=None, test=None, pos=None, with_backoff=True,
-                      max_repeats=0, unknown_only=False, silent=False):
+    def evaluate_pos2(self, gold=None, test=None, with_backoff=True,
+                      max_repeats=0, pos=None, unknown_only=False,
+                      silent=False):
         """Score the accuracy of the POS tagger against the gold standard.
         Remove POS tags from the gold standard text, retag it using the tagger,
         then compute the accuracy score. If test is not None, compute the
@@ -598,8 +599,6 @@ class MorphParser2(MorphParser):
         :param gold: a corpus of tagged sentences to score the tagger on.
                      If gold is None then loaded test corpus is used
         :param test: a corpus of tagged sentences to compare with gold
-        :param pos: name of the tag to evaluate the tagger; if None, then
-                    tagger will be evaluated for all tags
         :param with_backoff: if result of the tagger differs from both base
                              taggers, get one of the bases on the ground of
                              some heuristics
@@ -609,6 +608,9 @@ class MorphParser2(MorphParser):
                             one repeat - only for tokens where POS-1 taggers
                             don't concur
         :type max_repeats: int
+        :param pos: name of the tag to evaluate the tagger; if None, then
+                    tagger will be evaluated for all tags
+        :type pos: str
         :param unknown_only: calculate accuracy score only for words that are
                              not present in train corpus
         :param silent: suppress log
@@ -859,8 +861,8 @@ class MorphParser2(MorphParser):
                      dropout=None, context_dropout=None):
         """Train FEATS-2 taggers from ``self._train_corpus``.
 
-        :param joint: if True, use joint FEATS-2 model; elsewise, use separate
-                      models (default)
+        :param joint: if True, use joint FEATS-2 model; elsewise, train
+                      separate models (default)
         :param feat: name of the feat to evaluate the tagger; if None, then
                      tagger will be evaluated for all feats
         :type feat: str

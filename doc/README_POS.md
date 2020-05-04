@@ -49,7 +49,7 @@ corpus*. Stay it as it is (`True`) to save training time.
 
 **context_dropout** `float` (`0` .. `1`): a fraction of POS tags to be
 randomly replaced after predict to random POS tags to prevent overfitting.
-Recommended values are about `0.01` and less. Default is `None` (don't do
+Recommended values are about `0.1` and less. Default is `None` (don't do
 that).
 
 Returns final evaluation score(s) for the trained model (if *test corpus* is

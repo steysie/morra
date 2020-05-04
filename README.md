@@ -59,6 +59,8 @@ as input.
 
 [Named-entity Recognition](https://github.com/fostroll/morra/blob/master/doc/README_NER.md)
 
+[Supplements](https://github.com/fostroll/morra/blob/master/doc/README_SUPPLEMENTS.md)
+
 ## Examples
 
 You can find them in the directory `examples` of our ***Morra*** github

@@ -63,7 +63,7 @@ corpus*. Stay it as it is (`True`) to save training time.
 
 **context_dropout** `float` (`0` .. `1`): a fraction of POS tags to be
 randomly replaced after predict to random POS tags to prevent overfitting.
-Recommended values are about `0.01` and less. Default is `None` (don't do
+Recommended values are about `0.1` and less. Default is `None` (don't do
 that).
 
 Returns final evaluation score(s) for the trained model (if *test corpus* is
@@ -218,8 +218,7 @@ is `None`: we don't want to save.
 
 Returns iterator of tagged **sentences** in *Parsed CONLL-U* format.
 
-If you have trained bidirectional models of both joint and separate types, you
-may use conjoint tagger that use them together:
+If both joint and separate FEATS-2 models are available:
 ```python
 mp.predict_feats3_sents(sentences=None,
                         with_s_backoff=True, max_s_repeats=0,
@@ -240,6 +239,7 @@ All params where explained earlier.
 
 Returns the accuracy score.
 
+If both joint and separate FEATS-2 models are available:
 ```python
 score = mp.evaluate_feats3(gold=None, test=None,
                            with_s_backoff=True, max_s_repeats=0,

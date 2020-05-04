@@ -212,6 +212,25 @@ class BaseParser:
     @staticmethod
     def split_corpus(corpus, split=[.8, .1, .1], save_split_to=None,
                      seed=None, silent=False):
+        """Split a *corpus* in the given proportion.
+
+        :param corpus: a name of file in CONLL-U format or list/iterator of
+                       sentences in Parsed CONLL-U
+        :param split: list of sizes of the necessary *corpus* parts. If values
+                      are of int type, they are interpreted as lengths of new
+                      corpuses in sentences; if values are float, they are
+                      proportions of a given *corpus*. The types of the
+                      *split* values can't be mixed: they are either all int,
+                      or all float. The sum of float values must be less or
+                      equals to 1; the sum of int values can't be greater than
+                      the lentgh of the *corpus*
+        :param save_split_to: list of file names to save the result of the
+                              *corpus* splitting. Can be `None` (default;
+                              don't save parts to files) or its length must be
+                              equal to the length of *split*
+        :param silent: if True, suppress output
+        :return: a list of new corpuses
+        """
         assert save_split_to is None or len(save_split_to) == len(split), \
                'ERROR: lengths of split and save_split_to must be equal'
         isfloat = len([x for x in split if isinstance(x, float)]) > 0
@@ -374,7 +393,7 @@ class BaseParser:
     def remove_rare_feats(self, abs_thresh=None, rel_thresh=None,
                           full_rel_thresh=None):
         """Remove feats from train and test corpora, occurence of which
-        in the train corpus is less then threshold.
+        in the train corpus is less then a threshold.
 
         :param abs_thresh: remove features if their count in the train corpus
                            is less than this value
@@ -570,8 +589,76 @@ class BaseParser:
 results = []
 def autotrain(train_func, *args, silent=False,
               backup_model_func=None, restore_model_func=None,
-              reload_trainset_func=None, fit_params={}, params_in_process={},
+              reload_trainset_func=None, fit_params={}, params_in_process=None,
               **kwargs):
+    """
+    This is a tool for models' hyperparameters selection. It made simple,
+    without any multiprocessing, so it's just save time of user from cyclical
+    rerunnings the training process with new parameters, but it's not speedup
+    the training. Howewer, user can simultaneously run several versions of
+    `autotrain()` with different hyperparameters' combinations.
+
+    :param train_func: method to train the model.
+
+    :param args: positional args for *train_func*. Will be passed as is.
+
+    :param silent: if True, suppress the output.
+
+    :param backup_model_func: method to backup the model internal state. If not
+                              None, it will be used to save the state of the
+                              model with the highest score, for that we don't
+                              train it anew
+
+    :param restore_model_func: method to restore the model internal state. If
+                               not None, then in the end, this method will be
+                               invoked with the only param: internal state 
+                               of the best model. There is no use or even may
+                               be cause of runtime error, to specify
+                               *restore_model_func* without
+                               *backup_model_func*
+
+    :param reload_trainset_func: method to load the training corpus anew. It
+                                 may become necessary if you want to achieve
+                                 complete reproducibility. The training corpus
+                                 is randomly shuffled before each training
+                                 iteration, so you should reload it before each
+                                 new training if you want to have possibility
+                                 to repeat the training with the best
+                                 parameters and get the model with exactly the
+                                 same internal state
+
+    :param fit_params: dict of hyperparameters' keys and lists of their values
+                       among which we want to find the best. It is not very
+                       flexible. We just check combinations of all the given
+                       values of all the given hyperparameters.
+                       E.g.:
+                           fit_params={
+                               'dropout': [None, .005, .01],
+                               'context_dropout': [None, .05, .1]
+                           }
+                       produces next additional keyword args for *train_func*:
+                           {'dropout': None, 'context_dropout': None}
+                           {'dropout': None, 'context_dropout': .05}
+                           {'dropout': None, 'context_dropout': .1}
+                           {'dropout': .005, 'context_dropout': None}
+                           {'dropout': .005, 'context_dropout': .05}
+                           {'dropout': .005, 'context_dropout': .1}
+                           {'dropout': .01, 'context_dropout': None}
+                           {'dropout': .01, 'context_dropout': .05}
+                           {'dropout': .01, 'context_dropout': .1}
+
+    :param params_in_process: for internal use only. Leave it as it is
+
+    :param kwargs: keyword args for *train_func*. Will be passed as is
+
+    When all training have done, the tool returns
+    `tuple(<best model score>, <best model params>, <best model internal state>)`.
+    If *backup_model_func* is `None`, `<best model internal state>` will be 
+    `None`, too
+
+    Also, `<best model internal state>` will be loaded to your model, if
+    *reload_trainset_func* is not `None`.
+    """
     global results
     if not silent:
         print('AUTOTRAIN model STARTED', file=LOG_FILE)

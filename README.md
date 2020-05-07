@@ -8,7 +8,7 @@
 A part of ***RuMor*** project. It provides tools to organize a pipeline for
 complete morphological sentence parsing Named-entity recognition.
 
-Scores on *SynTagRus*: accuracy `98.50%` for POS tagging; `98.73%` for lemmata
+Scores on *SynTagRus*: accuracy `98.50%` for POS tagging; `98.74%` for lemmata
 detection.
 
 This project was making with a focus on Russian language, but it can be also

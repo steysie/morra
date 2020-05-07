@@ -666,6 +666,8 @@ def autotrain(train_func, *args, silent=False,
         print('Fitting params:', fit_params, file=LOG_FILE)
         results = []
     _kwargs = deepcopy(kwargs)
+    if not params_in_process:
+        params_in_process = {}
     if fit_params:
         _fit_params = deepcopy(fit_params)
         kwarg = list(_fit_params.keys())[0]

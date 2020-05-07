@@ -38,7 +38,7 @@ class MorphParser3(MorphParser2):
         :type max_j_repeats: int
         :param inplace: if True, method changes and returns the given sentence
                         itself; elsewise, new sentence will be created
-        :return: tagged sentence in Parsed CONLL-U format
+        :return: tagged *sentence* in Parsed CONLL-U format
         """
         if not inplace:
             sentence = deepcopy(sentence)
@@ -89,7 +89,7 @@ class MorphParser3(MorphParser2):
         :type feats_j_repeats: int
         :param inplace: if True, method changes and returns the given sentence
                         itself; elsewise, new sentence will be created
-        :return: tagged sentence in Parsed CONLL-U format
+        :return: tagged *sentence* in Parsed CONLL-U format
         """
         return \
             self.predict_feats3(
@@ -193,16 +193,16 @@ class MorphParser3(MorphParser2):
     def evaluate_feats3(self, gold=None, test=None,
                         with_s_backoff=True, max_s_repeats=0,
                         with_j_backoff=True, max_j_repeats=0,
-                        feat=None, silent=False):
-        """Score the accuracy of the FEATS-2 tagger against the gold standard.
-        Remove feats (or only one specified feat) from the gold standard text,
-        generate new feats using the tagger, then compute the accuracy score.
-        If test is not None, compute the accuracy of the test corpus with
-        respect to the gold.
+                        feat=None, unknown_only=False, silent=False):
+        """Score the accuracy of the FEATS-2 tagger against the *gold*
+        standard. Remove feats (or only one specified feat) from the *gold*
+        standard text, generate new feats using the tagger, then compute the
+        accuracy score. If *test* is not None, compute the accuracy of the
+        *test* corpus with respect to the *gold*.
 
         :param gold: a corpus of tagged sentences to score the tagger on.
-                     If gold is None then loaded test corpus is used
-        :param test: a corpus of tagged sentences to compare with gold
+                     If *gold* is None then loaded test corpus is used
+        :param test: a corpus of tagged sentences to compare with *gold*
         :param with_s_backoff: if result of separate FEATS-2 tagger differs
                                from both its base taggers, get one of the bases
                                on the ground of some heuristics
@@ -216,12 +216,14 @@ class MorphParser3(MorphParser2):
         :param feat: name of the feat to evaluate the tagger; if None, then
                      tagger will be evaluated for all feats
         :type feat: str
+        :param unknown_only: calculate accuracy score only for words that are
+                             not present in train corpus
         :param silent: suppress log
         :return: accuracy scores of the tagger against the gold:
                  1. by tokens: the tagging of the whole token may be either
                     correct or not;
                  2. by tags: sum of correctly detected feats to sum of all
-                    feats that is non-empty in either gold or retagged 
+                    feats that are non-empty in either gold or retagged 
                     sentence
         :rtype: tuple(float, float)
         """
@@ -234,7 +236,7 @@ class MorphParser3(MorphParser2):
                     inplace=inplace
                 )
         res = self.evaluate_feats(gold=gold, test=test, feat=feat,
-                                  silent=silent)
+                                  unknown_only=unknown_only, silent=silent)
         self.predict_feats = f
         return res
 
@@ -242,16 +244,16 @@ class MorphParser3(MorphParser2):
                   pos_backoff=True, pos_repeats=0,
                   feats_s_backoff=True, feats_s_repeats=0,
                   feats_j_backoff=True, feats_j_repeats=0,
-                  feat=None, silent=False):
+                  feat=None, unknown_only=False, silent=False):
         """Score a joint accuracy of the all available taggers against the
-        gold standard. Extract wforms from the gold standard text, retag it
-        using all the taggers, then compute a joint accuracy score.  If test is
-        not None, compute the accuracy of the test corpus with respect to the
-        gold.
+        *gold* standard. Extract wforms from the *gold* standard text, retag it
+        using all the taggers, then compute a joint accuracy score.  If *test*
+        is not None, compute the accuracy of the *test* corpus with respect to
+        the *gold*.
 
         :param gold: a corpus of tagged sentences to score the tagger on.
-                     If gold is None then loaded test corpus is used
-        :param test: a corpus of tagged sentences to compare with gold
+                     If *gold* is None then loaded test corpus is used
+        :param test: a corpus of tagged sentences to compare with *gold*
         :type pos_backoff: if result of POS-2 tagger differs from both its
                            base taggers, get one of the bases on the ground
                            of some heuristics
@@ -270,12 +272,13 @@ class MorphParser3(MorphParser2):
                      tagger will be evaluated for all feats
         :type feat: str
         :param silent: suppress log
+        :param unknown_only: calculate accuracy score only for words that are
+                             not present in train corpus
         :return: joint accuracy scores of the taggers against the gold:
                  1. by tokens: the tagging of the whole token may be either
                     correct or not
-                 2. by tags: sum of correctly detected feats to sum of all
-                    feats that is non-empty in either gold or retagged 
-                    sentences
+                 2. by tags: sum of correctly detected tags to sum of all tags
+                    that are non-empty in either gold or retagged sentences
         :rtype: tuple(float, float)
         """
         f = self.predict
@@ -290,6 +293,7 @@ class MorphParser3(MorphParser2):
                               feats_j_backoff=feats_j_backoff,
                               feats_j_repeats=feats_j_repeats,
                               inplace=inplace)
-        res = self.evaluate(gold=gold, test=test, feat=feat, silent=silent)
+        res = self.evaluate(gold=gold, test=test, feat=feat,
+                            unknown_only=unknown_only, silent=silent)
         self.predict = f
         return res

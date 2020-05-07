@@ -233,7 +233,7 @@ class MorphParser(BaseParser):
                     straight one
         :param inplace: if True, method changes and returns the given sentence
                         itself; elsewise, new sentence will be created
-        :return: tagged sentence in Parsed CONLL-U format
+        :return: tagged *sentence* in Parsed CONLL-U format
         """
         cdict = self._cdict
         model = self._pos_rev_model if rev else self._pos_model
@@ -280,7 +280,7 @@ class MorphParser(BaseParser):
         :type sentence: list(dict)
         :param inplace: if True, method changes and returns the given sentence
                         itself; elsewise, the new sentence will be created
-        :return: tagged sentence in Parsed CONLL-U format
+        :return: tagged *sentence* in Parsed CONLL-U format
         """
         cdict = self._cdict
         assert self._lemma_model, \
@@ -321,7 +321,7 @@ class MorphParser(BaseParser):
         :type feat: str
         :param inplace: if True, method changes and returns the given sentence
                         itself; elsewise, new sentence will be created
-        :return: tagged sentence in Parsed CONLL-U format
+        :return: tagged *sentence* in Parsed CONLL-U format
         """
         return (
             self._predict_feats_joint if joint else
@@ -445,7 +445,7 @@ class MorphParser(BaseParser):
                           straight one
         :param inplace: if True, method changes and returns the given sentence
                         itself; elsewise, new sentence will be created
-        :return: tagged sentence in Parsed CONLL-U format
+        :return: tagged *sentence* in Parsed CONLL-U format
         """
         return \
             self.predict_feats(
@@ -563,14 +563,14 @@ class MorphParser(BaseParser):
 
     def evaluate_pos(self, gold=None, test=None, rev=False, pos=None,
                      unknown_only=False, silent=False):
-        """Score the accuracy of the POS tagger against the gold standard.
-        Remove POS tags from the gold standard text, retag it using the tagger,
-        then compute the accuracy score. If test is not None, compute the
-        accuracy of the test corpus with respect to the gold.
+        """Score the accuracy of the POS tagger against the *gold* standard.
+        Remove POS tags from the *gold* standard text, retag it using the
+        tagger, then compute the accuracy score. If *test* is not None, compute
+        the accuracy of the *test* corpus with respect to the *gold*.
 
         :param gold: a corpus of tagged sentences to score the tagger on.
-                     If gold is None then loaded test corpus is used
-        :param test: a corpus of tagged sentences to compare with gold
+                     If *gold* is None then loaded test corpus is used
+        :param test: a corpus of tagged sentences to compare with *gold*
         :param rev: if True, use Reversed POS tagger instead of generic
                     straight one
         :param pos: name of the tag to evaluate the tagger; if None, then
@@ -655,14 +655,15 @@ class MorphParser(BaseParser):
 
     def evaluate_lemma(self, gold=None, test=None, unknown_only=False,
                        silent=False):
-        """Score the accuracy of the Lemma generator against the gold standard.
-        Remove lemmata from the gold standard text, generate new lemmata using
-        the tagger, then compute the accuracy score. If test is not None,
-        compute the accuracy of the test corpus with respect to the gold.
+        """Score the accuracy of the Lemma generator against the *gold*
+        standard. Remove lemmata from the *gold* standard text, generate new
+        lemmata using the tagger, then compute the accuracy score. If *test* is
+        not None, compute the accuracy of the *test* corpus with respect to the
+        *gold*.
 
         :param gold: a corpus of tagged sentences to score the generator on.
-                     If gold is None then loaded test corpus is used
-        :param test: a corpus of tagged sentences to compare with gold
+                     If *gold* is None then loaded test corpus is used
+        :param test: a corpus of tagged sentences to compare with *gold*
         :param unknown_only: calculate accuracy score only for words that are
                              not present in train corpus
         :param silent: suppress log
@@ -722,15 +723,15 @@ class MorphParser(BaseParser):
 
     def evaluate_feats(self, gold=None, test=None, joint=False, rev=False,
                        feat=None, unknown_only=False, silent=False):
-        """Score the accuracy of the FEATS tagger against the gold standard.
-        Remove feats (or only one specified feat) from the gold standard text,
-        generate new feats using the tagger, then compute the accuracy score.
-        If test is not None, compute the accuracy of the test corpus with
-        respect to the gold.
+        """Score the accuracy of the FEATS tagger against the *gold* standard.
+        Remove feats (or only one specified feat) from the *gold* standard
+        text, generate new feats using the tagger, then compute the accuracy
+        score. If *test* is not None, compute the accuracy of the *test* corpus
+        with respect to the *gold*.
 
         :param gold: a corpus of tagged sentences to score the tagger on.
-                     If gold is None then loaded test corpus is used
-        :param test: a corpus of tagged sentences to compare with gold
+                     If *gold* is None then loaded test corpus is used
+        :param test: a corpus of tagged sentences to compare with *gold*
         :param joint: if True, use joint FEATS model; elsewise, use separate
                       models (default)
         :param rev: if True, use Reversed FEATS tagger instead of generic
@@ -745,7 +746,7 @@ class MorphParser(BaseParser):
                  1. by tokens: the tagging of the whole token may be either
                     correct or not;
                  2. by tags: sum of correctly detected feats to sum of all
-                    feats that is non-empty in either gold or retagged 
+                    feats that are non-empty in either gold or retagged 
                     sentence
         :rtype: tuple(float, float)
         """
@@ -829,14 +830,14 @@ class MorphParser(BaseParser):
                  feats_joint=False, feats_rev=False, feat=None,
                  unknown_only=False, silent=False):
         """Score a joint accuracy of the all available taggers against the
-        gold standard. Extract wforms from the gold standard text, retag it
-        using all the taggers, then compute a joint accuracy score. If test
-        is not None, compute the accuracy of the test corpus with respect to
-        the gold.
+        *gold* standard. Extract wforms from the *gold* standard text, retag it
+        using all the taggers, then compute a joint accuracy score. If *test*
+        is not None, compute the accuracy of the *test* corpus with respect to
+        the *gold*.
 
         :param gold: a corpus of tagged sentences to score the tagger on.
-                     If gold is None then loaded test corpus is used
-        :param test: a corpus of tagged sentences to compare with gold
+                     If *gold* is None then loaded test corpus is used
+        :param test: a corpus of tagged sentences to compare with *gold*
         :param pos_rev: if True, use Reversed POS tagger instead of generic
                         straight one
         :param feats_joint: if True, use joint FEATS model; elsewise, use
@@ -852,9 +853,8 @@ class MorphParser(BaseParser):
         :return: joint accuracy scores of the taggers against the gold:
                  1. by tokens: the tagging of the whole token may be either
                     correct or not
-                 2. by tags: sum of correctly detected feats to sum of all
-                    feats that is non-empty in either gold or retagged 
-                    sentences
+                 2. by tags: sum of correctly detected tags to sum of all tags
+                    that are non-empty in either gold or retagged sentences
         :rtype: tuple(float, float)
         """
         n = c = nt = ct = 0

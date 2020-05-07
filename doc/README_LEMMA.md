@@ -36,7 +36,7 @@ When model are trained, you can use it to generate lemmata for your text data.
 
 Generate lemmata just for one sentence:
 ```python
-mp.predict_lemma(sentence, inplace=True)
+sentence = mp.predict_lemma(sentence, inplace=True)
 ```
 **sentence**: the sentence in *Parsed CONLL-U* format.
 
@@ -48,7 +48,8 @@ filled.
 
 Generate lemmata for the whole corpus:
 ```python
-mp.predict_lemmata_sents(sentences=None, inplace=True, save_to=None)
+sentences = mp.predict_lemmata_sents(sentences=None, inplace=True,
+                                     save_to=None)
 ```
 **sentences**: a name of the file in *CONLL-U* format or list/iterator of
 sentences in *Parsed CONLL-U*. If None, then loaded *test corpus* is used.
@@ -84,4 +85,4 @@ in the *train corpus* (the corpus must be loaded).
 
 **silent**: suppress output.
 
-Returns the accuracy score.
+Returns the accuracy **score**.

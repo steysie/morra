@@ -3,6 +3,9 @@
 #
 # Copyright (C) 2020-present by Sergei Ternovykh
 # License: BSD, see LICENSE for details
+"""
+A tool that allows use several MorphParsers together in the ensemble.
+"""
 from copy import deepcopy
 
 from corpuscula.corpus_utils import _AbstractCorpus
@@ -10,20 +13,50 @@ from corpuscula.utils import LOG_FILE, print_progress
 from morra.base_parser import BaseParser
 
 class MorphEnsemble:
+    """A simple tool that allow to conjoin several MorphParsers to the
+    ensemble"""
 
     def __init__(self, cdict):
+        """
+        :param cdict: corpuscula CorpusDict of the current training corpus
+        """
         self._cdict = cdict
         self._predict_methods = []
 
     def add(self, predict_method, **kwargs):
+        """Add parser to the ensemble.
+
+        :param predict_method: a method of MorphParser that we prefer to use
+                               for prediction
+        :param kwargs: keyword arguments for *predict_method*
+        :return: index of added method
+        """
         index = len(self._predict_methods)
         self._predict_methods.append((predict_method, kwargs))
         return index
 
     def pop(self, index):
+        """Remove parser from the ensemble.
+
+        :param index: an index returned by the `.add()` method
+        :return: the method removed
+        """
         return self.models.pop(index)
 
     def predict(self, fields_to_predict, sentence, inplace=True):
+        """Predict necessary fields of *sentences*.
+
+        :param fields_to_predict: the list of CONLL-U fields names you want to
+                                  get a prediction for. E.g.: ['UPOS',
+                                  'LEMMA', 'FEATS]. Note, that these fields
+                                  must be between the fields that the methods
+                                  added with the `.add()` can predict
+        :param sentence: the sentence in *Parsed CONLL-U* format
+        :param inplace: if True (default), method changes and returns the given
+                        *sentence** itself. Elsewise, the new sentence will be
+                        created
+        :return: tagged *sentence* in Parsed CONLL-U format
+        """
         if isinstance(fields_to_predict, str):
             fields_to_predict = [fields_to_predict]
         if not inplace:
@@ -91,17 +124,21 @@ class MorphEnsemble:
 
     def evaluate(self, fields_to_evaluate, gold=None, test=None,
                  feat=None, unknown_only=False, silent=False):
-        """Score a joint accuracy of the all available taggers against the
-        gold standard. Extract wforms from the gold standard text, retag it
-        using all the taggers, then compute a joint accuracy score. If test
-        is not None, compute the accuracy of the test corpus with respect to
-        the gold.
+        """Score an accuracy of the ensemble tagging against the *gold*
+        standard. Extract wforms from the *gold* standard text, retag it using
+        the ensemble, then compute a joint accuracy score. If *test* is not
+        None, compute the accuracy of the *test* corpus with respect to the
+        gold.
 
+        :param fields_to_evaluate: the list of CONLL-U fields names you want to
+                                   evaluate a prediction for. E.g.: ['UPOS',
+                                   'LEMMA', 'FEATS]. Note, that these fields
+                                   must be between the fields that the methods
+                                   added with the `.add()` can predict
         :param gold: a corpus of tagged sentences to score the tagger on.
-                     If gold is None then loaded test corpus is used
-        :param test: a corpus of tagged sentences to compare with gold
-        :param feat: name of the feat to evaluate the tagger; if None, then
-                     tagger will be evaluated for all feats
+        :param test: a corpus of tagged sentences to compare with *gold*
+        :param feat: name of the feat to evaluate the ensemble; if None, then
+                     the ensemble will be evaluated for all feats
         :type feat: str
         :param unknown_only: calculate accuracy score only for words that not
                              present in train corpus
@@ -109,14 +146,11 @@ class MorphEnsemble:
         :return: joint accuracy scores of the taggers against the gold:
                  1. by tokens: the tagging of the whole token may be either
                     correct or not
-                 2. by tags: sum of correctly detected feats to sum of all
-                    feats that is non-empty in either gold or retagged 
-                    sentences
+                 2. by tags: sum of correctly detected tags to sum of all tags
+                    that are non-empty in either gold or retagged sentences
         :rtype: tuple(float, float)
         """
         n = c = nt = ct = 0
-        if gold is None:
-            gold = self._test_corpus
         elif (isinstance(gold, type) and issubclass(gold, _AbstractCorpus)) \
         or isinstance(gold, _AbstractCorpus):
             gold = gold.test()
@@ -145,10 +179,8 @@ class MorphEnsemble:
                 wform = gold_token['FORM']
                 if wform and '-' not in gold_token['ID']:
                     gold_pos = gold_token['UPOS']
-                    if not (False
-                        #unknown_only and cdict.wform_isknown(wform,
-                        #                                     tag=gold_pos)
-                    ):
+                    if not unknown_only or cdict.wform_isknown(wform,
+                                                               tag=gold_pos):
                         test_token = test_sent[j]
                         nf = cf = 0
                         # LEMMA

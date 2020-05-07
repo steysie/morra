@@ -24,12 +24,12 @@ score = mp.train_pos(rev=False, epochs=5, no_train_evals=True, seed=None,
 ```
 **rev**: if `False` (default), train forward tagger; if `True`, then backward.
 
-**epochs**: number of training iterations. If **epochs** > `0`, then the model
-will be trained for exactly that number of iterations. But you can specify
-**epochs** < `0`, then the best model will be searched based on evaluation of
-the *test corpus* (*test corpus* must be loaded it you want this feature). The
-search will stop when the result of next `abs(epochs)` iterations is worse
-than the best one.
+**epochs**: number of training iterations. If **epochs** greater than `0`,
+then the model will be trained for exactly that number of iterations. But you
+can specify **epochs** less than `0`, then the best model will be searched
+based on evaluation of the *test corpus* (*test corpus* must be loaded it you
+want this feature). The search will stop when the result of next `abs(epochs)`
+iterations is worse than the best one.
 
 It's allowed to specify epochs as a `tuple` of both variants (positive and
 negative). Then, search for the best model will start only when number of
@@ -52,8 +52,8 @@ randomly replaced after predict to random POS tags to prevent overfitting.
 Recommended values are about `0.1` and less. Default is `None` (don't do
 that).
 
-Returns final evaluation score(s) for the trained model (if *test corpus* is
-loaded and/or **no_train_evals** is `False`).
+Returns final evaluation **score**(s) for the trained model (if *test corpus*
+is loaded and/or **no_train_evals** is `False`).
 
 After both forward and backward unidirectional taggers are trained, you can
 train bidirectional one:
@@ -80,7 +80,7 @@ also have access to unidirectional models.
 
 Tag just one sentence:
 ```python
-mp.predict_pos(sentence, rev=False, inplace=True)
+sentence = mp.predict_pos(sentence, rev=False, inplace=True)
 ```
 **sentence**: the sentence in *Parsed CONLL-U* format.
 
@@ -93,7 +93,8 @@ Returns the **sentence** tagged, also in *Parsed CONLL-U* format.
 
 Tag the whole corpus:
 ```python
-mp.predict_pos_sents(sentences=None, rev=False, inplace=True, save_to=None)
+sentence = mp.predict_pos_sents(sentences=None, rev=False, inplace=True,
+                                save_to=None)
 ```
 **sentences**: a name of the file in *CONLL-U* format or list/iterator of
 sentences in *Parsed CONLL-U*. If None, then loaded *test corpus* is used.
@@ -132,13 +133,15 @@ in the *train corpus* (the corpus must be loaded).
 
 **silent**: suppress output.
 
-Returns the accuracy score.
+Returns the accuracy **score**.
 
 #### Bidirectional Model
 
 Tag just one sentence:
 ```python
-mp.predict_pos2(sentence, with_backoff=True, max_repeats=0, inplace=True)
+sentence = mp.predict_pos2(sentence,
+                           with_backoff=True, max_repeats=0,
+                           inplace=True)
 ```
 **sentence**: the sentence in *Parsed CONLL-U* format.
 
@@ -158,8 +161,9 @@ Returns the **sentence** tagged, also in *Parsed CONLL-U* format.
 
 Tag the whole corpus:
 ```python
-mp.predict_pos2_sents(sentences=None, with_backoff=True, max_repeats=0,
-                      inplace=True, save_to=None)
+sentence = mp.predict_pos2_sents(sentences=None,
+                                 with_backoff=True, max_repeats=0,
+                                 inplace=True, save_to=None)
 ```
 **sentences**: a name of the file in *CONLL-U* format or list/iterator of
 sentences in *Parsed CONLL-U*. If None, then loaded *test corpus* is used.
@@ -179,4 +183,4 @@ score = mp.evaluate_pos2(gold=None, test=None, rev=False, pos=None,
 ```
 All params where explained earlier.
 
-Returns the accuracy score.
+Returns the accuracy **score**.

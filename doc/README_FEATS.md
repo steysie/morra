@@ -11,7 +11,7 @@ chapter.
 ### Training
 
 ***Morra*** contains total 7 FEATS taggers. There are 2 different model types:
-joint, when we train one model for all FEATS tags; and separate, that contain
+joint, when we train one model for all FEATS tags; and separate, that contains
 individual models for every tag. Further, each model type has 2 unidirectional
 (forward and backward) and 1 bidirectional taggers. Bidirectional use results
 of unidirectional taggers, so we need to train them all.
@@ -38,12 +38,12 @@ backward.
 **feat**: name of the feat to evaluate the tagger; if `None` (default), then
 tagger will be evaluated for all feats.
 
-**epochs**: number of training iterations. If **epochs** > `0`, then the model
-will be trained for exactly that number of iterations. But you can specify
-**epochs** < `0`, then the best model will be searched based on evaluation of
-the *test corpus* (*test corpus* must be loaded it you want this feature). The
-search will stop when the result of next `abs(epochs)` iterations is worse
-than the best one.
+**epochs**: number of training iterations. If **epochs** greater than `0`,
+then the model will be trained for exactly that number of iterations. But you
+can specify **epochs** less than `0`, then the best model will be searched
+based on evaluation of the *test corpus* (*test corpus* must be loaded it you
+want this feature). The search will stop when the result of next `abs(epochs)`
+iterations is worse than the best one.
 
 It's allowed to specify epochs as a `tuple` of both variants (positive and
 negative). Then, search for the best model will start only when number of
@@ -89,15 +89,15 @@ See
 
 When models are trained, you can use them to tag your text data. Usually, you
 will use only bidirectional model via `.predict_feats2_sents()` or
-`.predict_feats2_sents()` methods. But you also have access to unidirectional
+`.predict_feats3_sents()` methods. But you also have access to unidirectional
 models.
 
 #### Unidirectional Models
 
 Tag just one sentence:
 ```python
-mp.predict_feats(sentence, joint=False, rev=False, feat=None,
-                 inplace=True)
+sentence = mp.predict_feats(sentence, joint=False, rev=False,
+                            feat=None, inplace=True)
 ```
 **sentence**: the sentence in *Parsed CONLL-U* format.
 
@@ -106,8 +106,8 @@ mp.predict_feats(sentence, joint=False, rev=False, feat=None,
 
 **rev**: if `False` (default), use forward tagger; if `True`, backward.
 
-**feat**: name of the feat to tag; if `None`, then all possible feats will be
-tagged.
+**feat**: name of the feat to tag; if `None` (default), then all possible
+feats will be tagged.
 
 **inplace**: if `True` (default), method changes and returns the given
 **sentence** itself. Elsewise, the new sentence will be created.
@@ -116,8 +116,8 @@ Returns the **sentence** tagged, also in *Parsed CONLL-U* format.
 
 Tag the whole corpus:
 ```python
-mp.predict_feats_sents(sentences=None, joint=False, rev=False, feat=None,
-                       inplace=True, save_to=None)
+sentences = mp.predict_feats_sents(sentences=None, joint=False, rev=False,
+                                   feat=None, inplace=True, save_to=None)
 ```
 **sentences**: a name of the file in *CONLL-U* format or list/iterator of
 sentences in *Parsed CONLL-U*. If None, then loaded *test corpus* is used.
@@ -131,8 +131,8 @@ Returns iterator of tagged **sentences** in *Parsed CONLL-U* format.
 
 Evaluate FEATS tagging:
 ```python
-score = mp.evaluate_feats(gold=None, test=None, joint=False, rev=False,
-                          feat=None, unknown_only=False, silent=False)
+scores = mp.evaluate_feats(gold=None, test=None, joint=False, rev=False,
+                           feat=None, unknown_only=False, silent=False)
 ```
 Calculate the accuracy score of the FEATS tagging of the **test** corpus
 against the **gold**. Both **gold** and **test** (like any input corpora in
@@ -152,22 +152,23 @@ original **gold** corpus.
 
 **rev**: if `False` (default), use forward tagger; if `True`, backward.
 
-**feat**: name of the feat to evaluate the tagger; if None, then tagger will
-be evaluated for all feats.
+**feat**: name of the feat to evaluate the tagger; if `None` (default), then
+the tagger will be evaluated for all feats.
 
 **unknown_only**: calculate accuracy score only for words that are not present
 in the *train corpus* (the corpus must be loaded).
 
 **silent**: suppress output.
 
-Returns the accuracy score.
+Returns the accuracy **scores** wrt tokens and wrt tags.
 
 #### Bidirectional Model
 
 Tag just one sentence:
 ```python
-mp.predict_feats2(sentence, joint=False, with_backoff=True,
-                  max_repeats=0, feat=None, inplace=True)
+sentence = mp.predict_feats2(sentence, joint=False,
+                             with_backoff=True, max_repeats=0,
+                             feat=None, inplace=True)
 ```
 **sentence**: the sentence in *Parsed CONLL-U* format.
 
@@ -184,7 +185,7 @@ changes in prediction are diminishing and **max_repeats** is not reached. `0`
 don't concur.
 
 **feat**: name of the feat to tag; if `None`, then all possible feats will be
-tagged
+tagged.
 
 **inplace**: if `True` (default), method changes and returns the given
 **sentence** itself. Elsewise, the new sentence will be created.
@@ -194,10 +195,10 @@ Returns the **sentence** tagged, also in *Parsed CONLL-U* format.
 If you have trained bidirectional models of both joint and separate types, you
 may use conjoint tagger that use them together:
 ```python
-mp.predict_feats3(sentence,
-                  with_s_backoff=True, max_s_repeats=0,
-                  with_j_backoff=True, max_j_repeats=0,
-                  inplace=True)
+sentence = mp.predict_feats3(sentence,
+                             with_s_backoff=True, max_s_repeats=0,
+                             with_j_backoff=True, max_j_repeats=0,
+                             inplace=True)
 ```
 Here, **with_s_backoff** and **max_s_repeats** are params **with_backoff** and
 **max_repeats** for separate FEATS-2 models; **with_j_backoff** and
@@ -205,8 +206,9 @@ Here, **with_s_backoff** and **max_s_repeats** are params **with_backoff** and
 
 Tag the whole corpus:
 ```python
-mp.predict_feats2_sents(sentences=None, joint=False, with_backoff=True,
-                        max_repeats=0, inplace=True, save_to=None)
+sentence = mp.predict_feats2_sents(sentences=None, joint=False,
+                                   with_backoff=True, max_repeats=0,
+                                   feat=None, inplace=True, save_to=None)
 ```
 **sentences**: a name of the file in *CONLL-U* format or list/iterator of
 sentences in *Parsed CONLL-U*. If None, then loaded *test corpus* is used.
@@ -220,10 +222,10 @@ Returns iterator of tagged **sentences** in *Parsed CONLL-U* format.
 
 If both joint and separate FEATS-2 models are available:
 ```python
-mp.predict_feats3_sents(sentences=None,
-                        with_s_backoff=True, max_s_repeats=0,
-                        with_j_backoff=True, max_j_repeats=0,
-                        inplace=True, save_to=None)
+sentence = mp.predict_feats3_sents(sentences=None,
+                                   with_s_backoff=True, max_s_repeats=0,
+                                   with_j_backoff=True, max_j_repeats=0,
+                                   inplace=True, save_to=None)
 ```
 All params where explained earlier.
 
@@ -231,21 +233,21 @@ Returns iterator of tagged **sentences** in *Parsed CONLL-U* format.
 
 Evaluate FEATS tagging:
 ```python
-score = mp.evaluate_feats2(gold=None, test=None, joint=False, rev=False,
-                           with_backoff=True, max_repeats=0, feat=None,
-                           unknown_only=False, silent=False)
+scores = mp.evaluate_feats2(gold=None, test=None, joint=False, rev=False,
+                            with_backoff=True, max_repeats=0,
+                            feat=None, unknown_only=False, silent=False)
 ```
 All params where explained earlier.
 
-Returns the accuracy score.
+Returns the accuracy **scores** wrt tokens and wrt tags.
 
 If both joint and separate FEATS-2 models are available:
 ```python
-score = mp.evaluate_feats3(gold=None, test=None,
-                           with_s_backoff=True, max_s_repeats=0,
-                           with_j_backoff=True, max_j_repeats=0,
-                           feat=None, silent=False)
+scores = mp.evaluate_feats3(gold=None, test=None,
+                            with_s_backoff=True, max_s_repeats=0,
+                            with_j_backoff=True, max_j_repeats=0,
+                            feat=None, unknown_only=False, silent=False)
 ```
 All params where explained earlier.
 
-Returns the accuracy score.
+Returns the accuracy **scores** wrt tokens and wrt tags.

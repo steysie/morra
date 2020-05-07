@@ -150,8 +150,8 @@ of all taggers for using those methods.
 
 Predict the fields of just one sentence:
 ```python
-mp.predict(sentence, pos_rev=False, feats_joint=False,
-           feats_rev=False, inplace=True)
+sentence = mp.predict(sentence, pos_rev=False, feats_joint=False,
+                      feats_rev=False, inplace=True)
 ```
 **sentence**: the sentence in *Parsed CONLL-U* format.
 
@@ -170,8 +170,8 @@ Returns the **sentence** tagged, also in *Parsed CONLL-U* format.
 
 Predict the fields of the whole corpus:
 ```python
-mp.predict_sents(sentences=None, pos_rev=False, feats_joint=False,
-                 feats_rev=False, inplace=True, save_to=None)
+sentences = mp.predict_sents(sentences=None, pos_rev=False, feats_joint=False,
+                             feats_rev=False, inplace=True, save_to=None)
 ```
 **sentences**: a name of the file in *CONLL-U* format or list/iterator of
 sentences in *Parsed CONLL-U*. If `None`, then loaded *test corpus* is used.
@@ -224,9 +224,9 @@ Returns the accuracy scores wrt tokens and wrt tags.
 
 Predict fields of just one sentence:
 ```python
-mp.predict2(sentence, pos_backoff=True, pos_repeats=0,
-            feats_joint=False, feats_backoff=True, feats_repeats=0,
-            inplace=True)
+sentence = mp.predict2(sentence, pos_backoff=True, pos_repeats=0,
+                       feats_joint=False, feats_backoff=True, feats_repeats=0,
+                       inplace=True)
 ```
 **sentence**: the sentence in *Parsed CONLL-U* format.
 
@@ -259,9 +259,9 @@ Returns the **sentence** tagged, also in *Parsed CONLL-U* format.
 Next method can be used if both joint and separate FEATS-2 models are
 available:
 ```python
-mp.predict3(sentence, pos_backoff=True, pos_repeats=0,
-            feats_s_backoff=True, feats_s_repeats=0,
-            feats_j_backoff=True, feats_j_repeats=0, inplace=True)
+sentence = mp.predict3(sentence, pos_backoff=True, pos_repeats=0,
+                       feats_s_backoff=True, feats_s_repeats=0,
+                       feats_j_backoff=True, feats_j_repeats=0, inplace=True)
 ```
 **feats_s_backoff**: if result of separate FEATS-2 tagger differs from both
 its base taggers, get one of the bases on the ground of some heuristics.
@@ -275,9 +275,9 @@ base taggers, get one of the bases on the ground of some heuristics.
 
 Predict the fields of the whole corpus:
 ```python
-mp.predict2_sents(self, sentences=None, pos_backoff=True, pos_repeats=0,
-                  feats_joint=False, feats_backoff=True, feats_repeats=0,
-                  inplace=True, save_to=None)
+sentences = mp.predict2_sents(sentences=None, pos_backoff=True, pos_repeats=0,
+                              feats_joint=False, feats_backoff=True,
+                              feats_repeats=0, inplace=True, save_to=None)
 ```
 **sentences**: a name of the file in *CONLL-U* format or list/iterator of
 sentences in *Parsed CONLL-U*. If `None`, then loaded *test corpus* is used.
@@ -291,9 +291,10 @@ Returns iterator of tagged **sentences** in *Parsed CONLL-U* format.
 
 If both joint and separate FEATS-2 models are available:
 ```python
-mp.predict3_sents(sentence, pos_backoff=True, pos_repeats=0,
-                  feats_s_backoff=True, feats_s_repeats=0,
-                  feats_j_backoff=True, feats_j_repeats=0, inplace=True)
+sentences = mp.predict3_sents(sentences=None, pos_backoff=True, pos_repeats=0,
+                              feats_s_backoff=True, feats_s_repeats=0,
+                              feats_j_backoff=True, feats_j_repeats=0,
+                              inplace=True, save_to=None)
 ```
 All params where explained earlier.
 
@@ -301,22 +302,22 @@ Returns iterator of tagged **sentences** in *Parsed CONLL-U* format.
 
 Evaluate conjoint prediction:
 ```python
-score = mp.evaluate2(gold=None, test=None, pos_backoff=True, pos_repeats=0,
-                     feats_joint=False, feats_backoff=True, feats_repeats=0,
-                     feat=None, unknown_only=False, silent=False)
+scores = mp.evaluate2(gold=None, test=None, pos_backoff=True, pos_repeats=0,
+                      feats_joint=False, feats_backoff=True, feats_repeats=0,
+                      feat=None, unknown_only=False, silent=False)
 ```
 All params where explained earlier.
 
-Returns the accuracy scores wrt tokens and wrt tags.
+Returns the accuracy **scores** wrt tokens and wrt tags.
 
 If both joint and separate FEATS-2 models are available:
 ```python
-score = mp.evaluate3(gold=None, test=None,
-                     pos_backoff=True, pos_repeats=0,
-                     feats_s_backoff=True, feats_s_repeats=0,
-                     feats_j_backoff=True, feats_j_repeats=0,
-                     feat=None, silent=False)
+scores = mp.evaluate3(gold=None, test=None,
+                      pos_backoff=True, pos_repeats=0,
+                      feats_s_backoff=True, feats_s_repeats=0,
+                      feats_j_backoff=True, feats_j_repeats=0,
+                      feat=None, unknown_only=False, silent=False)
 ```
 All params where explained earlier.
 
-Returns the accuracy scores wrt tokens and wrt tags.
+Returns the accuracy **scores** wrt tokens and wrt tags.

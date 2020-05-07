@@ -713,14 +713,14 @@ class MorphParserNE(BaseParser):
 
     def evaluate_ne(self, gold=None, test=None, joint=True, rev=False,
                     ne=None, silent=False):
-        """Score the accuracy of the NE tagger against the gold standard.
-        Remove NE tags from the gold standard text, retag it using the tagger,
-        then compute the accuracy score. If test is not None, compute the
-        accuracy of the test corpus with respect to the gold.
+        """Score the accuracy of the NE tagger against the *gold* standard.
+        Remove NE tags from the *gold* standard text, retag it using the
+        tagger, then compute the accuracy score. If *test* is not None, compute
+        the accuracy of the *test* corpus with respect to the *gold*.
 
         :param gold: a corpus of tagged sentences to score the tagger on.
-                     If gold is None then loaded test corpus is used
-        :param test: a corpus of tagged sentences to compare with gold
+                     If *gold* is None then loaded test corpus is used
+        :param test: a corpus of tagged sentences to compare with *gold*
         :param joint: if True, use joint NE model (default); elsewise, use
                       separate models
         :param rev: if True, use Reversed NE tagger instead of generic
@@ -801,14 +801,14 @@ class MorphParserNE(BaseParser):
 
     def evaluate_ne2(self, gold=None, test=None, joint=True,
                      with_backoff=True, max_repeats=0, ne=None, silent=False):
-        """Score the accuracy of the NE-2 tagger against the gold standard.
-        Remove NE tags from the gold standard text, retag it using the tagger,
-        then compute the accuracy score. If test is not None, compute the
-        accuracy of the test corpus with respect to the gold.
+        """Score the accuracy of the NE-2 tagger against the *gold* standard.
+        Remove NE tags from the *gold* standard text, retag it using the
+        tagger, then compute the accuracy score. If *test* is not None, compute
+        the accuracy of the *test* corpus with respect to the *gold*.
 
         :param gold: a corpus of tagged sentences to score the tagger on.
-                     If gold is None then loaded test corpus is used
-        :param test: a corpus of tagged sentences to compare with gold
+                     If *gold* is None then loaded test corpus is used
+        :param test: a corpus of tagged sentences to compare with *gold*
         :param joint: if True, use joint NE-2 model (default); elsewise, use
                       separate models
         :type with_backoff: if result of the tagger differs from both base
@@ -843,14 +843,14 @@ class MorphParserNE(BaseParser):
     def evaluate_ne3(self, gold=None, test=None,
                      with_s_backoff=True, max_s_repeats=0,
                      with_j_backoff=True, max_j_repeats=0, silent=False):
-        """Score the accuracy of the NE-3 tagger against the gold standard.
-        Remove NE tags from the gold standard text, retag it using the tagger,
-        then compute the accuracy score. If test is not None, compute the
-        accuracy of the test corpus with respect to the gold.
+        """Score the accuracy of the NE-3 tagger against the *gold* standard.
+        Remove NE tags from the *gold* standard text, retag it using the
+        tagger, then compute the accuracy score. If *test* is not None, compute
+        the accuracy of the *test* corpus with respect to the *gold*.
 
         :param gold: a corpus of tagged sentences to score the tagger on.
-                     If gold is None then loaded test corpus is used
-        :param test: a corpus of tagged sentences to compare with gold
+                     If *gold* is None then loaded test corpus is used
+        :param test: a corpus of tagged sentences to compare with *gold*
         :param with_s_backoff: if result of separate NE-2 tagger differs
                                from both its base taggers, get one of the bases
                                on the ground of some heuristics
@@ -888,6 +888,8 @@ class MorphParserNE(BaseParser):
                       separate models
         :param rev: if True, train Reversed NE tagger instead of generic
                     straight one
+        :param ne: name of the entity to evaluate the tagger; if None
+                   (default), then tagger will be evaluated for all entities.
         :param epochs: number of training iterations. If epochs < 0, then the
                        best model will be searched based on evaluation of test
                        corpus. The search will be stopped when the result of

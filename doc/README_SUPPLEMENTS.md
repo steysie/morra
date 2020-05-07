@@ -148,5 +148,119 @@ If **backup_model_func** is `None`, `<best model internal state>` will be
 Also, `<best model internal state>` will be loaded to your model, if
 **reload_trainset_func** is not `None`.
 
-### Ensemble
+### Creating an Ensemble
 
+***Morra*** has a simple tool that allow to conjoin several `MorphParsers` to
+the ensemble. That can increase stability of prediction and, sometimes,
+increase the overall prediction quality.
+
+To create an ensemble, run:
+```python
+from morra import MorphEnsemble
+me = MorphEnsemble(cdict)
+```
+Here, **cdict** is a
+[*Corpus Dictionary*](https://github.com/fostroll/corpuscula/blob/master/doc/README_CDICT.md)
+from ***Corpuscula*** package. You don't have to create it directly. You can
+use *Corpus Dictionary* of any `MorphParser` that you want to conjoin in the
+ensemble. **NB:** We presume that you train all the parsers on the same
+corpus; otherwise, there may be nuances.
+
+So, you've created the empty `MorphEnsemble` `me`. After that, you can add 
+your parsers to it:
+```python
+index = me.add(predict_method, **kwargs)
+```
+Here, **predict_method** is a method of `MorphParser` that we prefer to use
+for prediction; **kwargs** - keyword arguments for **predict_method**.
+
+`.add()` returns the **index** of the method added. You can use it to remove
+the method from the ensemble:
+```python
+method = me.pop(index)
+```
+Although, someone hardly will use this method often.
+
+Supposing, we have parsers **mp1**, **mp2** and **mp3**.
+Then, for example, we can add them to the ensemble with:
+```python
+me.add(mp1.predict3, pos_backoff=False, pos_repeats=2)
+me.add(mp2.predict3, pos_backoff=False, pos_repeats=2)
+me.add(mp3.predict3, pos_backoff=False, pos_repeats=2)
+```
+
+Note, that the addition's order matters. We count a prediction as the best
+if maximum number of parsers vote for it. But sometimes, we have several
+groups of equally voted parsers with maximum number of members. Then, the best
+model will be taken from the group that contains a `MorphParser` which was
+added earlier.
+
+If you want to predict only one exact field of *CONLL-U*, you can pass to
+`.add()` the more specific methods. E.g., for the only POS field you may want
+to use the method `.predict_pos2()`:
+```python
+me.add(mp1.predict_pos2, with_backoff=False, max_repeats=2)
+me.add(mp2.predict_pos2, with_backoff=False, max_repeats=2)
+me.add(mp3.predict_pos2, with_backoff=False, max_repeats=2)
+```
+
+To use the ensemble for the prediction of the necessary fields of just one
+sentence you can with:
+```python
+sentence = predict(fields_to_predict, sentence, inplace=True)
+```
+Here, **fields_to_predict** is a list of *CONLL-U* fields names you want to
+get a prediction for. E.g.: `fields_to_predict=['UPOS', 'LEMMA', 'FEATS]`.
+Note, that these fields must be between the fields that the methods added with
+the `.add()` can predict.
+
+**sentence**: the sentence in *Parsed CONLL-U* format.
+
+**inplace**: if `True` (default), method changes and returns the given
+**sentence** itself. Elsewise, the new sentence will be created.
+
+Returns the **sentence** tagged, also in *Parsed CONLL-U* format.
+
+Predict the fields of the whole corpus:
+```python
+sentences = predict_sents(fields_to_predict, sentences, inplace=True,
+                          save_to=None)
+```
+**sentences**: a name of the file in *CONLL-U* format or list/iterator of
+sentences in *Parsed CONLL-U*. If `None`, then loaded *test corpus* is used.
+You can specify a ***Corpuscula***'s corpora wrapper here. In that case, the
+`.test()` part will be used.
+
+**save_to**: the name of the file where you want to save the result. Default
+is `None`: we don't want to save.
+
+Returns iterator of tagged **sentences** in *Parsed CONLL-U* format.
+
+Evaluate the ensemble quality:
+```python
+scores = evaluate(fields_to_evaluate, gold=None, test=None,
+                  feat=None, unknown_only=False, silent=False)
+```
+**fields_to_predict**: a list of *CONLL-U* fields names you want to
+evaluate a prediction for. E.g.: `fields_to_evaluate=['UPOS', 'LEMMA',
+'FEATS]`. Note, that these fields must be between the fields that the methods
+added with the `.add()` can predict.
+
+**gold**: a corpus of tagged sentences to score the tagger on.
+
+**test**: a corpus of tagged sentences to compare with **gold**.
+
+**feat** (of `str` type): name of the feat to evaluate the ensemble; if
+`None`, then the ensemble will be evaluated for all feats.
+
+**unknown_only**: calculate accuracy score only for words that not present in
+the train corpus (detected by **cdict** passed to constructor).
+
+**silent**: if `True`, suppress output.
+
+Return a `tuple` of accuracy **scores** of the ensemble against the
+**gold**:<br/>
+1. wrt tokens: the tagging of the whole token may be either correct or
+not.<br/>
+2. wrt tags: sum of correctly detected tags to sum of all tags that are
+non-empty in either **gold** or retagged sentences.

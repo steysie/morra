@@ -700,9 +700,10 @@ def autotrain(train_func, *args, silent=False,
         print('Train params:', kwargs, file=LOG_FILE)
         if reload_trainset_func:
             reload_trainset_func()
-        res = train_func(*args, **kwargs), {}, \
-              backup_model_func() if backup_model_func else None
-        results.append((res[0], params_in_process))
+        res = train_func(*args, **kwargs), {}, backup_model_func() \
+                                                   if backup_model_func else \
+                                               None
+        results.append((res[0], deepcopy(params_in_process)))
     if restore_model_func:
         restore_model_func(res[2])
     if not silent:

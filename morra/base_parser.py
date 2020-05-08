@@ -710,7 +710,7 @@ def autotrain(train_func, *args, silent=False,
         print('AUTOTRAIN model FINISHED', file=LOG_FILE)
         if results:
             print('Results:')
-            for res_ in reversed(sorted(results)):
+            for res_ in sorted(results, key=lambda x: (1 - x[0], str(x[1]))):
                 print(res_)
             print('Optimal fitting params:', res[1], file=LOG_FILE)
         print('Train quality:', res[0], file=LOG_FILE)

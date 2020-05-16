@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
-
+# Morra project
+#
+# Copyright (C) 2020-present by Sergei Ternovykh
+# License: BSD, see LICENSE for details
+"""
+Helpers for Morra parsers.
+"""
 import os
 import re
 from pymorphy2 import MorphAnalyzer
@@ -16,10 +22,10 @@ FEATS_GENDER_F = 'Fem'
 MISC_NE = 'Entity'
 MISC_NE_PERSON = 'Person'
 
-names_db = os.environ.get('NAMES_DB')
-surnames_db = os.environ.get('SURNAMES_DB')
-_names = Items(restore_from=names_db or 'names.pickle')
-_surnames = Items(restore_from=names_db or 'surnames.pickle')
+names_db = os.environ.get('NAMES_DB') or 'names.pickle'
+surnames_db = os.environ.get('SURNAMES_DB') or 'surnames.pickle'
+_names = Items(restore_from=names_db)
+_surnames = Items(restore_from=names_db)
 re_initial = re.compile('^[A-ZЁА-Я]\.$')
 ma_parse = MorphAnalyzer().parse
 

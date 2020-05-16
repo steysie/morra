@@ -10,7 +10,7 @@ WARNING: It will work long. Especially, training joint FEATS models.
 """
 from corpuscula.corpus_utils import download_ud, UniversalDependencies, \
                                     AdjustedForSpeech
-from morra import MorphParser3
+from morra import autotrain, MorphParser3
 
 ###
 import sys

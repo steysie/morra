@@ -14,6 +14,7 @@ from morra import MorphParserNE
 import sys
 sys.path.append('../')
 ###
+import _get_names_db
 from scripts.ne_local_methods import guess_ne
 
 MODEL_FN = 'model_ne.pickle'

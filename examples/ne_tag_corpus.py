@@ -14,6 +14,7 @@ from morra import MorphParser3, MorphParserNE
 import sys
 sys.path.append('../')
 ###
+import _get_names_db
 from scripts.local_methods_syntagrus import guess_pos, guess_lemma
 from scripts.ne_local_methods import guess_ne
 

@@ -13,6 +13,7 @@ from morra import MorphParser3
 import sys
 sys.path.append('../')
 ###
+import _get_names_db
 from scripts.local_methods_syntagrus import guess_pos, guess_lemma, guess_feat
 
 CORPUS_IN_FN = 'corpus.conllu'

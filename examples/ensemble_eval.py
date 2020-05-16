@@ -18,6 +18,7 @@ import sys
 import sys
 sys.path.append('../')
 ###
+import _get_names_db
 from scripts.local_methods_syntagrus import guess_pos, guess_lemma, guess_feat
 
 # we use UD Taiga corpus only as example. For real model training comment

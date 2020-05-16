@@ -8,6 +8,7 @@
 Example: A pipeline to train the Morra model with hyperparameters selection.
 WARNING: It will work long. Especially, training joint FEATS models.
 """
+import os
 from corpuscula.corpus_utils import download_ud, UniversalDependencies, \
                                     AdjustedForSpeech
 from morra import autotrain, MorphParser3
@@ -16,6 +17,8 @@ from morra import autotrain, MorphParser3
 import sys
 sys.path.append('../')
 ###
+from corpuscula.utils import download_file
+import _get_names_db
 from scripts.local_methods_syntagrus import guess_pos, guess_lemma, guess_feat
 
 MODEL_FN = 'model.pickle'

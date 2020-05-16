@@ -19,8 +19,6 @@ POS_VERB = 'VERB'
 FEATS_GENDER = 'Gender'
 FEATS_GENDER_M = 'Masc'
 FEATS_GENDER_F = 'Fem'
-MISC_NE = 'Entity'
-MISC_NE_PERSON = 'Person'
 
 names_db = os.environ.get('NAMES_DB') or 'names.pickle'
 surnames_db = os.environ.get('SURNAMES_DB') or 'surnames.pickle'
@@ -125,20 +123,3 @@ def guess_feat (guess, coef, i, feat, tokens, cdict):
     if guess_ is None:
         guess_, coef_ = guess, coef
     return guess_, coef_
-
-def guess_ne (guess, coef, i, tokens, cdict):
-    token = tokens[i]
-    lemma, pos = token[1:3]
-    # Person
-    if pos == POS_PROPN:
-        #if _names.item_isknown(lemma, 'patronym'):
-        #    guess, coef = MISC_NE_PERSON, .5
-        #elif _names.item_isknown(lemma, 'name'):
-        #    guess, coef = MISC_NE_PERSON, 1.
-        #elif _surnames.item_isknown(lemma, 'surname'):
-        #    guess, coef = MISC_NE_PERSON, 1.
-        pass
-    return guess, coef
-
-def fix_token ():
-    pass

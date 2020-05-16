@@ -7,14 +7,13 @@
 """
 Example: Evaluate Morra NER models.
 """
-from local_methods import guess_ne
 from morra import MorphParserNE
 
 ###
 import sys
 sys.path.append('../')
 ###
-from scripts.local_methods import guess_ne
+from scripts.ne_local_methods import guess_ne
 
 MODEL_FN = 'model_ne.pickle'
 test_corpus = 'corpus_test.conllu'

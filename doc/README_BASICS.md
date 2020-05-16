@@ -37,7 +37,7 @@ for internal POS, LEMMA and FEATS classificators. They serve to improve
 internal prediction algorithms and, normally, they should be different for
 different training corpora. For example, we have implementation of those
 methods for *SynTagRus* in the
-[`local_methods.py`](https://github.com/fostroll/morra/blob/master/scripts/local_methods.py)
+[`local_methods_syntagrus.py`](https://github.com/fostroll/morra/blob/master/scripts/local_methods_syntagrus.py)
 script.
 
 In the 

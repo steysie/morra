@@ -23,7 +23,7 @@ However, the base class of `MorphParserNE` **features** is
 [`morra.features.FeaturesNE`](https://github.com/fostroll/morra/blob/master/morra/features_ne.py).
 
 An example of the implementation of the **guess_ne** helper one can find in
-[`local_methods.py`](https://github.com/fostroll/morra/blob/master/scripts/local_methods.py).
+[`ne_local_methods.py`](https://github.com/fostroll/morra/blob/master/scripts/ne_local_methods.py).
 
 ### Loading the Training Data
 

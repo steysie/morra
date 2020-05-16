@@ -16,7 +16,7 @@ from morra import MorphParser3
 import sys
 sys.path.append('../')
 ###
-from scripts.local_methods import guess_pos, guess_lemma, guess_feat
+from scripts.local_methods_syntagrus import guess_pos, guess_lemma, guess_feat
 
 MODEL_FN = 'model.pickle'
 # set params you want to check

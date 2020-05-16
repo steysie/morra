@@ -8,14 +8,13 @@
 Example: A pipeline to train the Morra NER model with hyperparameters
 selection. WARNING: It will work long enough.
 """
-from local_methods import guess_ne
 from morra import MorphParserNE
 
 ###
 import sys
 sys.path.append('../')
 ###
-from scripts.local_methods import guess_ne
+from scripts.ne_local_methods import guess_ne
 
 MODEL_FN = 'model_ne.pickle'
 SEED=42

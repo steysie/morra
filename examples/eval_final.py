@@ -5,7 +5,8 @@
 # Copyright (C) 2019-present by Sergei Ternovykh
 # License: BSD, see LICENSE for details
 """
-Example: Evaluate one exact model you want to check. Set its parameters below.
+Example: Evaluate one exact Morra model you want to check. Set its
+parameters below.
 """
 from corpuscula.corpus_utils import download_syntagrus, syntagrus, \
                                     AdjustedForSpeech

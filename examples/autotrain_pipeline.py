@@ -24,7 +24,7 @@ download_syntagrus(overwrite=False)
 train_corpus = dev_corpus = test_corpus = syntagrus
 #train_corpus = dev_corpus = test_corpus = AdjustedForSpeech(syntagrus)
 
-def get_model (load_corpuses=True, load_model=True):
+def get_model(load_corpuses=True, load_model=True):
     mp = MorphParser3(guess_pos=guess_pos, guess_lemma=guess_lemma,
                       guess_feat=guess_feat)
     if load_corpuses:
@@ -34,7 +34,7 @@ def get_model (load_corpuses=True, load_model=True):
         mp.load(MODEL_FN)
     return mp
 
-def reload_train_corpus ():
+def reload_train_corpus():
     mp._train_corpus = None
     mp.load_train_corpus(train_corpus)
 

@@ -19,8 +19,8 @@ sys.path.append('../')
 from scripts.local_methods import guess_pos, guess_lemma, guess_feat
 
 WIKI_IN_FN = 'wiki.conllu'
-MODEL_FN = 'model.pickle'
 WIKI_OUT_FN = 'wiki.conllu'
+MODEL_FN = 'model.pickle'
 
 mp = MorphParser3(guess_pos=guess_pos, guess_lemma=guess_lemma,
                   guess_feat=guess_feat)
@@ -30,6 +30,7 @@ mp.predict_lemma_sents(
         WIKI_IN_FN,
 #        mp.load_conllu(WIKI_IN_FN, fix=True,
 #                       adjust_for_speech=True, log_file=None),
-        with_backoff=False, max_repeats=1),
+        with_backoff=False, max_repeats=1
+    ),
     save_to=WIKI_OUT_FN
 )

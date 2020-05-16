@@ -16,8 +16,10 @@ FEATS_GENDER_F = 'Fem'
 MISC_NE = 'Entity'
 MISC_NE_PERSON = 'Person'
 
-items_db = os.environ.get('ITEMS_DB')
-_it = Items(restore_from=items_db or 'items.pickle')
+names_db = os.environ.get('NAMES_DB')
+surnames_db = os.environ.get('SURNAMES_DB')
+_names = Items(restore_from=names_db or 'names.pickle')
+_surnames = Items(restore_from=names_db or 'surnames.pickle')
 re_initial = re.compile('^[A-ZЁА-Я]\.$')
 ma_parse = MorphAnalyzer().parse
 
@@ -35,14 +37,14 @@ def guess_pos (guess, coef, i, tokens, cdict):
 
     else:
         lemma, _ = cdict.predict_lemma(wform, POS_PROPN)
-        if _it.item_isknown(lemma, 'patronym'):
+        if _names.item_isknown(lemma, 'patronym'):
             guess, coef = POS_PROPN, 1.
-        elif _it.item_isknown(lemma, 'name'):
+        elif _names.item_isknown(lemma, 'name'):
             if guess is None:
                 guess, coef = POS_PROPN, 1.
             elif guess == POS_PROPN and coef < 1.:
                 coef = .8 * coef + .2
-        elif _it.item_isknown(lemma, 'surname'):
+        elif _surnames.item_isknown(lemma, 'surname'):
             if guess == POS_PROPN and coef < 1.:
                 coef = .8 * coef + .2
     return guess, coef
@@ -84,9 +86,9 @@ def guess_lemma (guess, coef, i, tokens, cdict):
                     break
     elif pos in ['PROPN']:
         if coef == 0:
-            if _it.item_isknown(wform, 'patronym'):
+            if _names.item_isknown(wform, 'patronym'):
                 guess, coef = wform, 1.
-            elif _it.item_isknown(wform, 'name'):
+            elif _names.item_isknown(wform, 'name'):
                 guess, coef = wform, 1.
             else:
                 guess_, coef = cdict.predict_lemma(wform, 'NOUN',
@@ -100,13 +102,15 @@ def guess_lemma (guess, coef, i, tokens, cdict):
     return guess, coef
 
 def guess_feat (guess, coef, i, feat, tokens, cdict):
+#def guess_feat (guess, coef, i, feat, c1, c2, c3, cdict):
     guess_, coef_ = None, None
     token = tokens[i]
     wform, lemma, pos = token[:3]
+    #wform, lemma, pos = c1[i], c2[i], c3[i]
     if pos == POS_PROPN and feat == FEATS_GENDER:
-        item = _it.get(item_class='patronym', item=lemma, copy=False) \
-            or _it.get(item_class='name', item=lemma, copy=False)
-            #or _it.get(item_class='surname', item=lemma, copy=False)
+        item = _names.get(item_class='patronym', item=lemma, copy=False) \
+            or _names.get(item_class='name', item=lemma, copy=False)
+            #or _surnames.get(item_class='surname', item=lemma, copy=False)
         if item:
             gender = item['gender']
             guess_, coef_ = FEATS_GENDER_M if gender == 'M' else \
@@ -121,11 +125,11 @@ def guess_ne (guess, coef, i, tokens, cdict):
     lemma, pos = token[1:3]
     # Person
     if pos == POS_PROPN:
-        #if _it.item_isknown(lemma, 'patronym'):
+        #if _names.item_isknown(lemma, 'patronym'):
         #    guess, coef = MISC_NE_PERSON, .5
-        #elif _it.item_isknown(lemma, 'name'):
+        #elif _names.item_isknown(lemma, 'name'):
         #    guess, coef = MISC_NE_PERSON, 1.
-        #elif _it.item_isknown(lemma, 'surname'):
+        #elif _surnames.item_isknown(lemma, 'surname'):
         #    guess, coef = MISC_NE_PERSON, 1.
         pass
     return guess, coef

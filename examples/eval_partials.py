@@ -5,7 +5,7 @@
 # Copyright (C) 2019-present by Sergei Ternovykh
 # License: BSD, see LICENSE for details
 """
-Example: Evaluate partial models.
+Example: Evaluate partial Morra models.
 """
 from corpuscula.corpus_utils import download_syntagrus, syntagrus, \
                                     AdjustedForSpeech
@@ -64,10 +64,12 @@ for _r in [0, 1, 2, 20]:
                        max_repeats=_r)
 print()
 print('== feats 3 ==')
-mp.evaluate_feats3(test_corpus)
-for _s in [0, 1, 2]:
-    for _j in [0, 1, 2]:
-        print('== feats 3:{}:{} =='.format(_s, _j))
-        mp.evaluate_feats3(test_corpus,
-                           with_s_backoff=False, max_s_repeats=_s,
-                           with_j_backoff=False, max_j_repeats=_j)
+for max_s in [None, 0, 1, 2]:
+    for max_j in [None, 0, 1, 2]:
+        print('== feats 3:{}:{} =='.format('' if max_s is None else max_s,
+                                           '' if max_j is None else max_j))
+        mp.evaluate_feats3(
+            test_corpus,
+            with_s_backoff=max_s is not None, max_s_repeats=max_s,
+            with_j_backoff=max_s is not None, max_j_repeats=max_j
+        )

@@ -24,7 +24,7 @@ download_syntagrus(overwrite=False)
 train_corpus = dev_corpus = test_corpus = syntagrus
 #train_corpus = dev_corpus = test_corpus = AdjustedForSpeech(syntagrus)
 
-def get_model (load_corpuses=True, load_model=True):
+def get_model(load_corpuses=True, load_model=True):
     mp = MorphParser3(guess_pos=guess_pos, guess_lemma=guess_lemma,
                       guess_feat=guess_feat)
     if load_corpuses:
@@ -98,7 +98,7 @@ mp.save(MODEL_FN)
 print('== feats 2s ==')
 mp.evaluate_feats2(test_corpus, joint=False, with_backoff=True)
 for _r in [0, 1, 2, 20]:
-    print('== feats 2j:{} =='.format(_r))
+    print('== feats 2s:{} =='.format(_r))
     mp.evaluate_feats2(test_corpus, joint=False, with_backoff=False,
                        max_repeats=_r)
 
@@ -132,9 +132,12 @@ for _r in [0, 1, 2, 20]:
 
 print()
 mp = get_model()
-for max_s in [0, 1, 2]:
-    for max_j in [0, 1, 2]:
-        print('== feats 3:{}:{} =='.format(max_s, max_j))
-        mp.evaluate_feats3(test_corpus,
-                           with_s_backoff=False, max_s_repeats=max_s,
-                           with_j_backoff=False, max_j_repeats=max_j)
+for max_s in [None, 0, 1, 2]:
+    for max_j in [None, 0, 1, 2]:
+        print('== feats 3:{}:{} =='.format('' if max_s is None else max_s,
+                                           '' if max_j is None else max_j))
+        mp.evaluate_feats3(
+            test_corpus,
+            with_s_backoff=max_s is not None, max_s_repeats=max_s,
+            with_j_backoff=max_s is not None, max_j_repeats=max_j
+        )

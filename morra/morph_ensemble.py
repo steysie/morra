@@ -151,7 +151,7 @@ class MorphEnsemble:
         :rtype: tuple(float, float)
         """
         n = c = nt = ct = 0
-        elif (isinstance(gold, type) and issubclass(gold, _AbstractCorpus)) \
+        if (isinstance(gold, type) and issubclass(gold, _AbstractCorpus)) \
         or isinstance(gold, _AbstractCorpus):
             gold = gold.test()
         assert gold, 'ERROR: Gold must not be empty'

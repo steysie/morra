@@ -7,7 +7,7 @@
 """
 Example: Evaluate ensemble of models. Here, we evaluate only POS-tagges.
 """
-from corpuscula.corpus_utils import download_syntagrus, syntagrus, \
+from corpuscula.corpus_utils import download_ud, UniversalDependencies, \
                                     AdjustedForSpeech
 from morra import MorphParser3
 from morra.morph_ensemble import MorphEnsemble
@@ -20,9 +20,15 @@ sys.path.append('../')
 ###
 from scripts.local_methods_syntagrus import guess_pos, guess_lemma, guess_feat
 
-download_syntagrus(overwrite=False)
-test_corpus = syntagrus
-#test_corpus = AdjustedForSpeech(syntagrus)
+# we use UD Taiga corpus only as example. For real model training comment
+# Taiga and uncomment SynTagRus
+corpus_name = 'UD_Russian-Taiga'
+#corpus_name = 'UD_Russian-SynTagRus'
+
+download_ud(corpus_name, overwrite=False)                           
+train_corpus = dev_corpus = test_corpus = UniversalDependencies(corpus_name)
+#train_corpus = dev_corpus = test_corpus = \
+#                         AdjustedForSpeech(UniversalDependencies(corpus_name))
 
 # all models should be in MODEL_DIR directory
 MODEL_DIR = 'ensemble'

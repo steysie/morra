@@ -209,9 +209,10 @@ for _r in [0, 1, 2, 20]:
 
 print()
 mp = get_model()
-for max_s in [0, 1, 2]:
-    for max_j in [0, 1, 2]:
-        print('== feats 3:{}:{} =='.format(max_s, max_j))
+for max_s in [None, 0, 1, 2]:
+    for max_j in [None, 0, 1, 2]:
+        print('== feats 3:{}:{} =='.format('' if max_s is None else max_s,
+                                           '' if max_j is None else max_j))
         mp.evaluate_feats3(test_corpus,
-                           with_s_backoff=False, max_s_repeats=max_s,
-                           with_j_backoff=False, max_j_repeats=max_j)
+                           with_s_backoff=max_s is None, max_s_repeats=max_s,
+                           with_j_backoff=max_j is None, max_j_repeats=max_j)

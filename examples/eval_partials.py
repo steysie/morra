@@ -24,7 +24,7 @@ MODEL_FN = 'model.pickle'
 corpus_name = 'UD_Russian-Taiga'
 #corpus_name = 'UD_Russian-SynTagRus'
 
-download_ud(corpus_name, overwrite=False)                           
+download_ud(corpus_name, overwrite=False)
 train_corpus = dev_corpus = test_corpus = UniversalDependencies(corpus_name)
 #train_corpus = dev_corpus = test_corpus = \
 #                         AdjustedForSpeech(UniversalDependencies(corpus_name))

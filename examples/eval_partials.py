@@ -69,7 +69,6 @@ for _r in [0, 1, 2, 20]:
     mp.evaluate_feats2(test_corpus, joint=True, with_backoff=False,
                        max_repeats=_r)
 print()
-print('== feats 3 ==')
 for max_s in [None, 0, 1, 2]:
     for max_j in [None, 0, 1, 2]:
         print('== feats 3:{}:{} =='.format('' if max_s is None else max_s,

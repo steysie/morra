@@ -145,7 +145,7 @@ mp.save(MODEL_FN)
 print('== ne 2s ==')
 mp.evaluate_ne2(test_corpus, joint=False, with_backoff=True)
 for _r in [0, 1, 2, 20]:
-    print('== ne 2j:{} =='.format(_r))
+    print('== ne 2s:{} =='.format(_r))
     mp.evaluate_ne2(test_corpus, joint=False, with_backoff=False,
                     max_repeats=_r)
 

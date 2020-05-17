@@ -20,7 +20,8 @@ MODEL_FN = 'model_ne.pickle'
 SEED=42
 
 # corpus must already be POS and LEMMA tagged and splitted into 'train',
-# 'dev' and 'test' parts.
+# 'dev' and 'test' parts. NE tags should be placed in MISC field in 'NE'
+# variable (e.g.: NE=Address)
 train_corpus = 'corpus_train.conllu'
 dev_corpus = 'corpus_dev.conllu'
 test_corpus = 'corpus_test.conllu'

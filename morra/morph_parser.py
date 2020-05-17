@@ -1289,9 +1289,10 @@ class MorphParser(BaseParser):
                     vals.add(gold)
                     if len(vals) > vals_len:
                         vals_sorted = sorted(vals)
+                        vals_len = len(vals)
                     prev2 = prev
                     prev = \
-                        guess if not context_dropout or vals_len \
+                        guess if not context_dropout \
                               or rand() >= context_dropout else \
                         vals_sorted[randint(0, vals_len - 1)]
 

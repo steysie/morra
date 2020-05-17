@@ -164,7 +164,7 @@ mp.save(MODEL_FN)
 print('== feats 2s ==')
 mp.evaluate_feats2(test_corpus, joint=False, with_backoff=True)
 for _r in [0, 1, 2, 20]:
-    print('== feats 2j:{} =='.format(_r))
+    print('== feats 2s:{} =='.format(_r))
     mp.evaluate_feats2(test_corpus, joint=False, with_backoff=False,
                        max_repeats=_r)
 

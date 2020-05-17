@@ -159,7 +159,7 @@ for feat in feats:
     results[feat] = (score, kwargs)
 for feat in feats:
     print(feat + ':', results[feat][0], results[feat][1])
-mp._save_feats2_models('_models_.feats2.pickle')
+mp._save_feats2_models('_models.feats2.pickle')
 mp.save(MODEL_FN)
 print('== feats 2s ==')
 mp.evaluate_feats2(test_corpus, joint=False, with_backoff=True)

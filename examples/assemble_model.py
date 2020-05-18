@@ -12,11 +12,11 @@ from morra import MorphParser3
 MODEL_FN = 'model.pickle'
 
 mp = MorphParser3()
-# If you already have a partial model, uncomment the line below and comment
-# loading partial models that you don't need
+# If you already have a partially trained model, uncomment the line below
 #mp.load(MODEL_FN)
 
 mp._load_cdict('_cdict.pickle')
+# comment partial models that you don't need
 mp._load_pos_model('_model.pos.pickle')
 mp._load_pos_rev_model('_model.pos_rev.pickle')
 mp._load_pos2_model('_model.pos2.pickle')

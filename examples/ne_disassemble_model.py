@@ -15,14 +15,14 @@ mp = MorphParserNE()
 mp.load(MODEL_FN)
 
 if mp._ne_model:
-    mp._load_ne_model('_model.ne.pickle')
+    mp._save_ne_model('_model.ne.pickle')
 if mp._ne_rev_model:
-    mp._load_ne_rev_model('_model.ne_rev.pickle')
+    mp._save_ne_rev_model('_model.ne_rev.pickle')
 if mp._ne_model:
-    mp._load_ne2_model('_model.ne2.pickle')
+    mp._save_ne2_model('_model.ne2.pickle')
 if mp._ne_models:
-    mp._load_ne_models('_models.ne.pickle')
+    mp._save_ne_models('_models.ne.pickle')
 if mp._ne_rev_models:
-    mp._load_ne_rev_models('_models.ne_rev.pickle')
+    mp._save_ne_rev_models('_models.ne_rev.pickle')
 if mp._ne2_models:
-    mp._load_ne2_models('_models.ne2.pickle')
+    mp._save_ne2_models('_models.ne2.pickle')

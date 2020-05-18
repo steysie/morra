@@ -8,7 +8,7 @@
 Example: A pipeline to train the Morra NER model with hyperparameters
 selection. WARNING: It will work long enough.
 """
-from morra import MorphParserNE
+from morra import autotrain, MorphParserNE
 
 ###
 import sys

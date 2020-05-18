@@ -45,7 +45,6 @@ for _r in [0, 1, 2, 20]:
     mp.evaluate_ne2(test_corpus, joint=False, with_backoff=False,
                     max_repeats=_r)
 print()
-mp = get_model()
 for max_s in [None, 0, 1, 2]:
     for max_j in [None, 0, 1, 2]:
         print('== ne 3:{}:{} =='.format('' if max_s is None else max_s,

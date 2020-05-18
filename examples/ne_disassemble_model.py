@@ -14,6 +14,8 @@ MODEL_FN = 'model_ne.pickle'
 mp = MorphParserNE()
 mp.load(MODEL_FN)
 
+if mp._cdict:
+    mp._save_cdict('_cdict.pickle')
 if mp._ne_model:
     mp._save_ne_model('_model.ne.pickle')
 if mp._ne_rev_model:

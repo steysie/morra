@@ -16,6 +16,7 @@ mp = MorphParserNE()
 # loading partial models that you don't need
 #mp.load(MODEL_FN)
 
+mp._load_cdict('_cdict.pickle')
 mp._load_ne_model('_model.ne.pickle')
 mp._load_ne_rev_model('_model.ne_rev.pickle')
 mp._load_ne2_model('_model.ne2.pickle')

@@ -16,6 +16,8 @@ mp.load(MODEL_FN)
 
 if mp._cdict:
     mp._save_cdict('_cdict.pickle')
+if mp._lemma_model:
+    mp._save_lemma_model('_model.lemma.pickle')
 if mp._pos_model:
     mp._save_pos_model('_model.pos.pickle')
 if mp._pos_rev_model:

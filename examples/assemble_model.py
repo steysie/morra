@@ -17,6 +17,7 @@ mp = MorphParser3()
 
 mp._load_cdict('_cdict.pickle')
 # comment partial models that you don't need
+mp._load_lemma_model('_model.lemma.pickle')
 mp._load_pos_model('_model.pos.pickle')
 mp._load_pos_rev_model('_model.pos_rev.pickle')
 mp._load_pos2_model('_model.pos2.pickle')

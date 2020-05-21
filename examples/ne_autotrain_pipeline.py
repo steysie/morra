@@ -158,4 +158,4 @@ for max_s in [None, 0, 1, 2]:
                                         '' if max_j is None else max_j))
         mp.evaluate_ne3(test_corpus,
                         with_s_backoff=max_s is not None, max_s_repeats=max_s,
-                        with_j_backoff=max_s is not None, max_j_repeats=max_j)
+                        with_j_backoff=max_j is not None, max_j_repeats=max_j)

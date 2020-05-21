@@ -591,7 +591,7 @@ class MorphParserNE(BaseParser):
             inplace=True
         )
         sent_j = iter(self._predict_ne2_joint(
-            sent, with_backoff=with_j_backoff, max_repeats=max_s_repeats,
+            sent, with_backoff=with_j_backoff, max_repeats=max_j_repeats,
             inplace=False, no_final_clean=True))
         for i, token in enumerate(sent):
             ne = token['MISC'].get('NE')

@@ -32,6 +32,6 @@ print()
 print('== 3:{}:{} =='.format(with_j_repeats, with_s_repeats))
 mp.evaluate_ne3(
     test_corpus,
-    feats_j_backoff=with_j_backoff, feats_j_repeats=with_j_repeats,
-    feats_s_backoff=with_s_backoff, feats_s_repeats=with_s_repeats
+    with_j_backoff=with_j_backoff, with_j_repeats=with_j_repeats,
+    with_s_backoff=with_s_backoff, with_s_repeats=with_s_repeats
 )

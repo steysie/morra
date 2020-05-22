@@ -21,17 +21,17 @@ MODEL_FN = 'model_ne.pickle'
 test_corpus = 'corpus_test.conllu'
 # set params you want to check
 with_j_backoff=False
-with_j_repeats = 0
+max_j_repeats = 0
 with_s_backoff=False
-with_s_repeats = 0
+max_s_repeats = 0
 
 mp = MorphParserNE(guess_ne=guess_ne)
 mp.load(MODEL_FN)
 
 print()
-print('== 3:{}:{} =='.format(with_j_repeats, with_s_repeats))
+print('== 3:{}:{} =='.format(max_j_repeats, max_s_repeats))
 mp.evaluate_ne3(
     test_corpus,
-    with_j_backoff=with_j_backoff, with_j_repeats=with_j_repeats,
-    with_s_backoff=with_s_backoff, with_s_repeats=with_s_repeats
+    with_j_backoff=with_j_backoff, max_j_repeats=max_j_repeats,
+    with_s_backoff=with_s_backoff, max_s_repeats=max_s_repeats
 )

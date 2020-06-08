@@ -6,7 +6,7 @@
 # License: BSD, see LICENSE for details
 """
 Example: A pipeline to train the Morra model with hyperparameters selection.
-WARNING: It will work long. Especially, training joint FEATS models.
+WARNING: It works long. Especially, training joint FEATS models.
 """
 import os
 from corpuscula.corpus_utils import download_ud, UniversalDependencies, \

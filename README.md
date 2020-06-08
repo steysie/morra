@@ -6,12 +6,12 @@
 [![License: BSD-3](https://img.shields.io/badge/License-BSD-brightgreen.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
 A part of ***RuMor*** project. It provides tools to organize a pipeline for
-complete morphological sentence parsing Named-entity recognition.
+complete morphological sentence parsing and named-entity recognition.
 
-Scores on *SynTagRus*: accuracy `98.50%` for POS tagging; `98.74%` for lemmata
+Scores on *SynTagRus*: accuracy `98.45%` for POS tagging; `98.74%` for lemmata
 detection.
 
-This project was making with a focus on Russian language, but it can be also
+This project was making with a focus on Russian language, but it can also be
 used with some other languages (European, at least).
 
 ## Installation

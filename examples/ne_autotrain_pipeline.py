@@ -6,7 +6,7 @@
 # License: BSD, see LICENSE for details
 """
 Example: A pipeline to train the Morra NER model with hyperparameters
-selection. WARNING: It will work long enough.
+selection. WARNING: It works long enough.
 """
 from morra import autotrain, MorphParserNE
 

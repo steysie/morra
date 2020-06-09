@@ -3,9 +3,9 @@
 
 ## Supplements
 
-***Morra*** package contain few additional utility methods that can simplify
-processing of corpuses. Also, it has a tools to simplify hyperparameters 
-selection and for using several trained morphological parsers conjointly in
+***Morra*** package contains few additional utility methods that can simplify
+processing of corpuses. Also, it has tools to simplify hyperparameter
+selection and using several trained morphological parsers conjointly in
 ensemble.
 
 ### Corpus processing
@@ -32,8 +32,8 @@ Split a **corpus** in a given proportion:
 MorphParser3.split_corpus(corpus, split=[.8, .1, .1], save_split_to=None,
                           seed=None, silent=False)
 ```
-Here, **corpus** is a name of file in
-[*CONLL-U*](https://universaldependencies.org/format.html) format or
+Here, **corpus** is a name of the file in
+[*CONLL-U*](https://universaldependencies.org/format.html) format or a
 list/iterator of sentences in
 [*Parsed CONLL-U*](https://github.com/fostroll/corpuscula/blob/master/doc/README_PARSED_CONLLU.md)
 
@@ -54,14 +54,14 @@ must be equal to the length of **split**.
 
 Returns a list of new corpuses.
 
-Sometimes, in train corpus, number of tokens with morphological feats of some
-type is not enough for robust model training. Feats of such tupes better
-remove from train process:
+Sometimes, in train corpus, a number of tokens with morphological feats of some
+type is not enough for robust model training. Feats of such types are better
+removed from the train process:
 ```python
 mp.remove_rare_feats(abs_thresh=None, rel_thresh=None, full_rel_thresh=None)
 ```
-That method removes from train and test corpora those feats, occurence of
-which in the train corpus is less then a threshold:
+That method removes from train and test corpora feats whose occurence 
+in the train corpus is less then the given threshold:
 
 **abs_thresh** (of `int` type): remove features if their count in the train
 corpus is less than this value.
@@ -76,11 +76,11 @@ the full count of the tokens of the train corpus is less than this value.
 
 ### Autotrain
 
-This is a tool for ***Morra*** models' hyperparameters selection. It made
-simple, without any multiprocessing, so it's just save time of user from 
-cyclical rerunnings the training process with new parameters, but it's not 
-speedup the training. Howewer, user can simultaneously run several versions of
-`autotrain()` with different hyperparameters' combinations.
+This is a tool for ***Morra*** models' hyperparameter selection. It is made
+simple, without any multiprocessing, so it just saves time for the user on 
+cyclical rerunnings the training process with new parameters, but it does not 
+speed up the training. Howewer, user can simultaneously run several versions of
+`autotrain()` with different hyperparameter combinations.
 
 ```python
 from morra import autotrain
@@ -97,25 +97,25 @@ Params:
 
 **silent**: if `True`, suppress the output.
 
-**backup_model_func**: method to backup the model internal state. If not
+**backup_model_func**: method to backup the model's internal state. If not
 `None`, it will be used to save the state of the model with the highest
-score, for that we don't train it anew.
+score, so that we don't train it anew.
 
-**restore_model_func**: method to restore the model internal state. If not
+**restore_model_func**: method to restore the model's internal state. If not
 `None`, then in the end, this method will be invoked with the only param:
-internal state of the best model. There is no use or even may be cause of
+internal state of the best model. It is not recommended, and even may lead to
 runtime error, to specify **restore_model_func** without
 **backup_model_func**.
 
 **reload_trainset_func**: method to load the training corpus anew. It may
 become necessary if you want to achieve complete reproducibility. The training
 corpus is randomly shuffled before each training iteration, so you should
-reload it before each new training if you want to have possibility to repeat
+reload it before each new training if you want to have the possibility to repeat
 the training with the best parameters and get the model with exactly the same
 internal state.
 
 **fit_params**: `dict` of hyperparameters' keys and lists of their values
-among which we want to find the best. It is not very flexible. We just check
+among which we want to find the best one. It is not very flexible. We just check
 combinations of all the given values of all the given hyperparameters. E.g.:
 ```python
 fit_params={
@@ -140,7 +140,7 @@ produces next additional keyword args for **train_func**:
 
 **kwargs**: keyword args for **train_func**. Will be passed as is.
 
-When all training have done, the tool returns
+When all training is done, the tool returns
 `tuple(<best model score>, <best model params>, <best model internal state>)`.
 If **backup_model_func** is `None`, `<best model internal state>` will be 
 `None`, too.
@@ -150,8 +150,8 @@ Also, `<best model internal state>` will be loaded to your model, if
 
 ### Creating an Ensemble
 
-***Morra*** has a simple tool that allow to conjoin several `MorphParsers` to
-the ensemble. That can increase stability of prediction and, sometimes,
+***Morra*** has a simple tool that allows to conjoin several `MorphParsers` to
+the ensemble. That can increase the prediction stability and, sometimes,
 increase the overall prediction quality.
 
 To create an ensemble, run:
@@ -179,24 +179,24 @@ the method from the ensemble:
 ```python
 method = me.pop(index)
 ```
-Although, someone hardly will use this method often.
+Although, it is unlikely that someone will use this method often.
 
-Supposing, we have parsers **mp1**, **mp2** and **mp3**.
-Then, for example, we can add them to the ensemble with:
+Suppose, we have parsers **mp1**, **mp2** and **mp3**.
+Then, for example, we can add them to the ensemble as follows:
 ```python
 me.add(mp1.predict3, pos_backoff=False, pos_repeats=2)
 me.add(mp2.predict3, pos_backoff=False, pos_repeats=2)
 me.add(mp3.predict3, pos_backoff=False, pos_repeats=2)
 ```
 
-Note, that the addition's order matters. We count a prediction as the best
-if maximum number of parsers vote for it. But sometimes, we have several
+Note, that the addition's order matters. We count the prediction as the best
+if the maximum number of parsers vote for it. But sometimes, we have several
 groups of equally voted parsers with maximum number of members. Then, the best
 model will be taken from the group that contains a `MorphParser` which was
 added earlier.
 
-If you want to predict only one exact field of *CONLL-U*, you can pass to
-`.add()` the more specific methods. E.g., for the only POS field you may want
+If you want to predict only one exact field of *CONLL-U*, you can pass 
+more specific methods to `.add()`. E.g., for the only POS field you may want
 to use the method `.predict_pos2()`:
 ```python
 me.add(mp1.predict_pos2, with_backoff=False, max_repeats=2)
@@ -204,12 +204,12 @@ me.add(mp2.predict_pos2, with_backoff=False, max_repeats=2)
 me.add(mp3.predict_pos2, with_backoff=False, max_repeats=2)
 ```
 
-To use the ensemble for the prediction of the necessary fields of just one
-sentence you can with:
+You can use the ensemble for the prediction of the necessary fields of just one
+sentence as follows:
 ```python
 sentence = predict(fields_to_predict, sentence, inplace=True)
 ```
-Here, **fields_to_predict** is a list of *CONLL-U* fields names you want to
+Here, **fields_to_predict** is a list of *CONLL-U* field names you want to
 get a prediction for. E.g.: `fields_to_predict=['UPOS', 'LEMMA', 'FEATS]`.
 Note, that these fields must be between the fields that the methods added with
 the `.add()` can predict.
@@ -226,15 +226,15 @@ Predict the fields of the whole corpus:
 sentences = predict_sents(fields_to_predict, sentences, inplace=True,
                           save_to=None)
 ```
-**sentences**: a name of the file in *CONLL-U* format or list/iterator of
+**sentences**: a name of the file in *CONLL-U* format or a list/iterator of
 sentences in *Parsed CONLL-U*. If `None`, then loaded *test corpus* is used.
-You can specify a ***Corpuscula***'s corpora wrapper here. In that case, the
+You can specify ***Corpuscula***'s corpora wrapper here. In that case, the
 `.test()` part will be used.
 
 **save_to**: the name of the file where you want to save the result. Default
 is `None`: we don't want to save.
 
-Returns iterator of tagged **sentences** in *Parsed CONLL-U* format.
+Returns an iterator of tagged **sentences** in *Parsed CONLL-U* format.
 
 Evaluate the ensemble quality:
 ```python

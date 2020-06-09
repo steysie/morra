@@ -3,7 +3,7 @@
 
 ## Lemmata Detection
 
-For lemmata detection you need training corpus already POS-tagged.
+For lemmata detection you need to have the training corpus already POS-tagged.
 [Part of Speach Tagging](https://github.com/fostroll/morra/blob/master/doc/README_POS.md)
 
 First of all, we need to create the parser object and load training data.
@@ -14,10 +14,10 @@ chapter.
 ### Training
 
 For now, ***Morra*** doesn't contain its own LEMMA generator and use the one
-from ***Corpuscula*** package. Though, before make prediction you have to run
+from ***Corpuscula*** package. Though, before making predictions you have to run
 dummy train method.
 
-**NB:** On this step you have a parser object `mp` created and training data
+**NB:** By this step you should have a parser object `mp` created and training data
 loaded.
 
 Just run this method without params:
@@ -32,7 +32,7 @@ See
 
 ### Predict and Evaluate
 
-When model are trained, you can use it to generate lemmata for your text data.
+When the model is trained, you can use it to generate lemmata for your text data.
 
 Generate lemmata just for one sentence:
 ```python
@@ -51,15 +51,15 @@ Generate lemmata for the whole corpus:
 sentences = mp.predict_lemmata_sents(sentences=None, inplace=True,
                                      save_to=None)
 ```
-**sentences**: a name of the file in *CONLL-U* format or list/iterator of
-sentences in *Parsed CONLL-U*. If None, then loaded *test corpus* is used.
-You can specify a ***Corpuscula***'s corpora wrapper here. In that case, the
+**sentences**: a name of the file in *CONLL-U* format or a list/iterator of
+sentences in *Parsed CONLL-U*. If None, then the loaded *test corpus* is used.
+You can specify ***Corpuscula***'s corpora wrapper here. In that case, the
 `.test()` part will be used.
 
-**save_to**: the name of the file where you want to save the result. Default
+**save_to**: the name of the file where you want to save the results. Default
 is `None`: we don't want to save.
 
-Returns iterator of **sentences** in *Parsed CONLL-U* format with LEMMA field
+Returns an iterator of **sentences** in *Parsed CONLL-U* format with LEMMA field
 filled.
 
 Evaluate LEMMA generator:
@@ -69,15 +69,15 @@ score = mp.evaluate_lemma(gold=None, test=None, unknown_only=False,
 ```
 Calculate accuracy score of the LEMMA generator on the **test** corpus against
 the **gold**. Both **gold** and **test** (like any input corpora in any
-**Morra** method) may be a name of the file in *CONLL-U* format or
+**Morra** method) may be a name of the file in *CONLL-U* format or a
 list/iterator of sentences in *Parsed CONLL-U*.
 
 If **gold** is `None` (default), then loaded *test corpus* is used. If
-**gold** is a ***Corpuscula***'s corpora wrapper, the `.test()` part will be
+**gold** is ***Corpuscula***'s corpora wrapper, the `.test()` part will be
 used.
 
 If **test** is `None` (default), then the **gold** corpus will be retagged
-with unidirectional model and then the result will be compared with the
+with unidirectional model, and then the result will be compared with the
 original **gold** corpus.
 
 **unknown_only**: calculate accuracy score only for words that are not present
